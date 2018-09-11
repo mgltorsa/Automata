@@ -98,6 +98,13 @@ public class Automata implements IAutomata{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void addAll(IState... states) {
+		for(IState state : states) {
+			this.states.put(state.getId(), state);
+		}
+		
+	}
 	
 	
 }

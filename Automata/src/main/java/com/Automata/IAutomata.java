@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public interface IAutomata {
 
 	public void addState(String id);
+	public void addAll(IState...states);
 	public void setInitialState(IState state);
 	public void setInitialState(String id);
 	public void addTransition(IState from, IState to, ITransition transition);
