@@ -11,18 +11,31 @@ import java.util.HashMap;
  *
  */
 public class Automata implements IAutomata{
+	private String id;
 	private Language language;
 	private IState initState;
 	private HashMap<String,IState> states;
 	
-	/**
-	 * 
-	 */
+
 	public Automata() {
+		this("DefAutomaton");
+	}
+	
+	
+	public Automata(String id) {
+		this.id=id;
 		language = new Language();
 		states = new HashMap<String, IState>();
 	}
 	
+	
+	public void setId(String id) {
+		this.id=id;
+	}
+	
+	public  String getId() {
+		return id;
+	}
 	public void addState(String id) {
 		// TODO Auto-generated method stub
 		

@@ -11,6 +11,8 @@ import java.util.ArrayList;
  */
 public interface IAutomata {
 
+	public void setId(String id);
+	public String getId();
 	public void addState(String id);
 	public void addAll(IState...states);
 	public void setInitialState(IState state);
