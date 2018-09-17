@@ -1,10 +1,10 @@
 /**
  * 
  */
-package com.StatesMachine;
+package com.statesMachine;
 
 
-import com.Automata.IState;
+import com.automata.IState;
 
 /**
  * @author Miguel

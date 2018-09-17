@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.Automata;
+package com.automata;
 
 /**
  * @author Miguel

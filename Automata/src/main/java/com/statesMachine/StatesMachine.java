@@ -1,9 +1,9 @@
 /**
  * 
  */
-package com.StatesMachine;
+package com.statesMachine;
 
-import com.Automata.Automata;
+import com.automata.Automata;
 
 /**
  * @author Miguel

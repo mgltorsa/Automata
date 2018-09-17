@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.Automata;
+package com.automata;
 
 import java.util.ArrayList;
 import java.util.HashMap;

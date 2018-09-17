@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <class-diagram version="1.2.2" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="com.StatesMachine.Moore" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/Moore.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="1" language="java" name="com.statesMachine.Moore" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/Moore.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="704" y="483"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -10,8 +10,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="2" language="java" name="com.StatesMachine.IMachineFunction" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/IMachineFunction.java" binary="false" corner="BOTTOM_RIGHT">    
+  <interface id="2" language="java" name="com.statesMachine.IMachineFunction" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/IMachineFunction.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="147" y="255"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -19,8 +19,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="3" language="java" name="com.StatesMachine.Mealy" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/Mealy.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="3" language="java" name="com.statesMachine.Mealy" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/Mealy.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="420" y="272"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -28,8 +28,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="4" language="java" name="com.StatesMachine.IStatesMachine" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/IStatesMachine.java" binary="false" corner="BOTTOM_RIGHT">    
+  <interface id="4" language="java" name="com.statesMachine.IStatesMachine" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/IStatesMachine.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="705" y="113"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -37,8 +37,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="5" language="java" name="com.StatesMachine.StatesMachine" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/StatesMachine.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="com.statesMachine.StatesMachine" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/StatesMachine.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="81" width="109" x="650" y="230"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -46,8 +46,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="com.StatesMachine.MachineFunction" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/MachineFunction.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="6" language="java" name="com.statesMachine.MachineFunction" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/MachineFunction.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="151" y="426"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -55,8 +55,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="com.StatesMachine.MealyTransition" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/MealyTransition.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="7" language="java" name="com.statesMachine.MealyTransition" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/MealyTransition.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="426" y="410"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -64,8 +64,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="com.StatesMachine.MooreState" project="Automata" 
-    file="/Automata/src/main/java/com/StatesMachine/MooreState.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="8" language="java" name="com.statesMachine.MooreState" project="Automata" 
+    file="/Automata/src/main/java/com/statesMachine/MooreState.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="933" y="471"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -73,18 +73,18 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <generalization id="9">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
+  <realization id="9">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
   <generalization id="10">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="5"/>  
   </generalization>  
-  <realization id="11">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="4"/>  
-  </realization>  
+  <generalization id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
   <realization id="12">    
     <end type="SOURCE" refId="6"/>    
     <end type="TARGET" refId="2"/>  
