@@ -3,13 +3,12 @@ package com.graphicManagers;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
-
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.Camera;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 
-import com.view.MainView;
+import com.view.AutomataViewer;
 
 public class MouseActions extends DefaultMouseManager {
 	protected Point initPoint;
@@ -18,7 +17,7 @@ public class MouseActions extends DefaultMouseManager {
 	private boolean selectMode;
 	private String init;
 	private String last;
-	private MainView main;
+	private AutomataViewer main;
 
 	@Override
 	public void init(GraphicGraph graph, View view) {
@@ -31,8 +30,9 @@ public class MouseActions extends DefaultMouseManager {
 
 	public void mousePressed(MouseEvent event) {
 		curElement = view.findNodeOrSpriteAt(event.getX(), event.getY());
-
-		mouseButtonPressOnElement(curElement, event);
+		if (curElement != null) {
+			mouseButtonPressOnElement(curElement, event);
+		}
 		view.beginSelectionAt(x1, y1);
 
 	}
@@ -121,9 +121,7 @@ public class MouseActions extends DefaultMouseManager {
 		lastPoint = null;
 	}
 
-	
-
-	public void setMain(MainView main) {
+	public void setMain(AutomataViewer main) {
 		this.main = main;
 	}
 

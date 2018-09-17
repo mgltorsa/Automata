@@ -20,6 +20,7 @@ public interface IAutomata {
 	public void addTransition(IState from, IState to, ITransition transition);
 	public IState transitionFunction(IState state, String stimulus);
 	public IState getState(String id);
+	public IState getInitState();
 	public ArrayList<ITransition> getTransitions(IState state);
 	public String getLanguage();
 	public void setLanguage(String language);

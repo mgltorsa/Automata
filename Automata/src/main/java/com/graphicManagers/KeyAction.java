@@ -4,20 +4,18 @@ import java.awt.event.KeyEvent;
 
 import org.graphstream.ui.view.util.DefaultShortcutManager;
 
-import com.view.MainView;
+import com.view.AutomataViewer;
 
 
 public class KeyAction extends DefaultShortcutManager {
 
-	protected MainView main;
+	protected AutomataViewer main;
 
 	public void keyTyped(KeyEvent event) {
 		if (event.getKeyChar() == 'R') {
 			view.getCamera().resetView();
 		} else if (event.getKeyChar() == 'a' || event.getKeyChar() == 'A') {
-			if (main != null) {
-				main.toFront();
-			}
+			
 		}
 		// else if( event.getKeyChar() == 'B' )
 		// {
@@ -25,7 +23,7 @@ public class KeyAction extends DefaultShortcutManager {
 		// }
 	}
 
-	public void setMain(MainView main) {
+	public void setMain(AutomataViewer main) {
 		this.main = main;
 	}
 }

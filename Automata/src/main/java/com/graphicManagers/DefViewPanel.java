@@ -23,8 +23,9 @@ import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.MouseManager;
 import org.graphstream.ui.view.util.ShortcutManager;
 
-import com.view.MainView;
+import com.view.AutomataViewer;
 import com.view.ViewDialog;
+
 
 
 
@@ -67,7 +68,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 	 */
 	protected GraphRenderer renderer;
 
-	private MainView main;
+	private AutomataViewer main;
 
 	/**
 	 * Main class
@@ -314,7 +315,8 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			mouseClicks.release();
 
 		if (manager == null)
-			
+			manager = new MouseActions();
+
 
 		manager.init(graph, this);
 
@@ -388,7 +390,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		}
 	}
 
-	public void setMain(MainView main) {
+	public void setMain(AutomataViewer main) {
 		this.main = main;
 		if (mouseClicks != null) {
 			((MouseActions) mouseClicks).setMain(main);

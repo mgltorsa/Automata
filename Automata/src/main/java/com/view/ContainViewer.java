@@ -66,7 +66,7 @@ public class ContainViewer extends Viewer {
 		}
 	}
 
-	public void setMain(MainView main) {
+	public void setMain(AutomataViewer main) {
 		if (view != null) {
 			view.setMain(main);
 		}

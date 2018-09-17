@@ -47,6 +47,10 @@ public class Automata implements IAutomata{
 		return null;
 	}
 	
+	public IState getInitState() {
+		//TODO
+		return null;
+	}
 	
 	public ArrayList<ITransition> getTransitions(IState state) {
 		// TODO Auto-generated method stub
@@ -61,7 +65,7 @@ public class Automata implements IAutomata{
 
 
 	public void setLanguage(String language) {
-		// TODO Auto-generated method stub
+		this.language= new Language(language);
 		
 	}
 
