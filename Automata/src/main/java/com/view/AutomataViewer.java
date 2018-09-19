@@ -18,16 +18,17 @@ public class AutomataViewer extends JSplitPane {
 	
 
 	private ViewDialog viewDialog;
-	private MainView main;
+	private Main main;
 	private AutomatonView stateMachine;
 	private AutomatonView automaton;
 	
-	public AutomataViewer(MainView main) {
+	public AutomataViewer(Main main) {
 		super(JSplitPane.VERTICAL_SPLIT);
 		this.main=main;
 		stateMachine = new AutomatonView("Maquina de estado");
 		automaton = new AutomatonView("Automata");
-		
+		stateMachine.setStateMachineView();
+		stateMachine.setRoot(this);
 		this.setLeftComponent(stateMachine);
 		this.setRightComponent(automaton);
 	}

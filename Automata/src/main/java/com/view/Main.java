@@ -11,10 +11,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import org.graphstream.ui.graphicGraph.GraphicGraph;
 
 @SuppressWarnings("serial")
-public class MainView extends JFrame implements ActionListener {
+public class Main extends JFrame implements ActionListener {
 	public final String LOAD = "Cargar";
 	public final String SAVE = "Guardar";
 	public final String CREATE_SM = "Crear maquina de estados";
@@ -23,7 +22,7 @@ public class MainView extends JFrame implements ActionListener {
 
 	private AutomataViewer viewer;
 
-	public MainView() {
+	public Main() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(1080, 640));
 		setPreferredSize(new Dimension(640, 480));
@@ -95,7 +94,7 @@ public class MainView extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-		MainView main = new MainView();
+		Main main = new Main();
 		main.setVisible(true);
 	}
 
