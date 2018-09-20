@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Desktop.Action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,9 +18,10 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class ButtonPanel extends JPanel {
 
-	protected int strokeSize = 1;
+	protected int strokeSize = 2;
 	/** Color of shadow */
 	protected Color shadowColor = Color.black;
 	/** Sets if it drops shadow */
@@ -51,8 +51,8 @@ public class ButtonPanel extends JPanel {
 		super();
 		setOpaque(false);
 		listeners = new ArrayList<ActionListener>();
-		clickColor = ViewFactories.ButtonPanePressed.getColor();
-		backgroundColor = ViewFactories.ButtonPaneBackgorund.getColor();
+		clickColor = ViewFactory.ButtonPanePressed;
+		backgroundColor = ViewFactory.ButtonPaneBackgorund;
 		setFocusable(true);
 		setLayout(new BorderLayout(0, 0));
 		lblMessage = new JLabel();
@@ -85,6 +85,7 @@ public class ButtonPanel extends JPanel {
 		super.setFont(font);
 		if (font != null && lblMessage!=null) {
 			lblMessage.setFont(font);
+			
 		}
 	}
 

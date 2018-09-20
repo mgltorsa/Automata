@@ -5,7 +5,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,6 +15,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	public final static String CREATE="Create state machine";
 	public final static String LOAD="Load file";
 	public final static String ABOUT="About program";
+	public final static Font DEFAULT_FONT = new Font("Serif", Font.CENTER_BASELINE, 12);
 
 	private JPanel contentPane;
 	private static PerformerView performerView;
@@ -24,7 +25,6 @@ public class PerformerView extends JFrame implements ActionListener{
 			JFrame.setDefaultLookAndFeelDecorated(true);
 			JDialog.setDefaultLookAndFeelDecorated(true);
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-
 			PerformerView frame = PerformerView.getInstance();
 			frame.setVisible(true);
 
@@ -36,16 +36,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	
 	
 	private PerformerView() {
-		ViewFactories.createDefaultFrame(this);
-//		setBackground(ViewFactories.FrameBackground.getColor());
-//		setForeground(ViewFactories.FrameForeground.getColor());
-//		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//		setBounds(100, 100, 540, 360);
-//		contentPane = new JPanel();
-//		contentPane.setBackground(ViewFactories.PaneBackground.getColor());
-//		contentPane.setForeground(ViewFactories.PaneForeground.getColor());
-//		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//		setContentPane(contentPane);
+		ViewFactory.createDefaultFrame(this);
 		contentPane = (JPanel) this.getContentPane();
 		setResizable(false);
 		createPaneButtons();
@@ -62,27 +53,34 @@ public class PerformerView extends JFrame implements ActionListener{
 		contentPane.setLayout(null);
 		ButtonPanel createMachine = new ButtonPanel();
 		createMachine.setBounds(38, 40, 151, 109);
-		createMachine.setBackground(ViewFactories.ButtonPaneBackgorund.getColor());
+		createMachine.setBackground(ViewFactory.ButtonPaneBackgorund);
 		createMachine.setCommand(CREATE);
 		createMachine.setMessage(CREATE);
 		contentPane.add(createMachine);
 		
-		ButtonPanel loadFile = new ButtonPanel();
-		loadFile.setBounds(175, 169, 151, 109);
-		loadFile.setBackground(ViewFactories.ButtonPaneBackgorund.getColor());
-		loadFile.setCommand(LOAD);
-		loadFile.setMessage(LOAD);
-		contentPane.add(loadFile);
-		
 		ButtonPanel instructions = new ButtonPanel();
-		instructions.setBounds(307, 40, 151, 109);
-		instructions.setBackground(ViewFactories.ButtonPaneBackgorund.getColor());
+		instructions.setBounds(175, 169, 151, 109);
+		instructions.setBackground(ViewFactory.ButtonPaneBackgorund);
 		instructions.setCommand(ABOUT);
 		instructions.setMessage(ABOUT);
-
 		contentPane.add(instructions);
-		addListeners(createMachine,loadFile,instructions);
+		
+		ButtonPanel loadFile = new ButtonPanel();
+		loadFile.setBounds(307, 40, 151, 109);
+		loadFile.setBackground(ViewFactory.ButtonPaneBackgorund);
+		loadFile.setCommand(LOAD);
+		loadFile.setMessage(LOAD);
 
+		contentPane.add(loadFile);
+		addListeners(createMachine,loadFile,instructions);
+		addFontToAll(DEFAULT_FONT,createMachine,loadFile,instructions);
+	}
+
+	private void addFontToAll(Font font, JPanel...panels) {
+		for(JPanel panel : panels) {
+			panel.setFont(font);
+		}
+		
 	}
 
 	private void addListeners(ButtonPanel... panels) {
@@ -94,7 +92,6 @@ public class PerformerView extends JFrame implements ActionListener{
 
 	@Override
 	public void dispose() {
-
 		super.dispose();
 		System.exit(0);
 	}
@@ -116,7 +113,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	}
 
 	private void loadFile() {		
-		
+		//TODO
 	}
 
 	private void showCreateMachine() {

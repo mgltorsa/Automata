@@ -27,7 +27,7 @@ public class MainView extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(1080, 640));
 		setPreferredSize(new Dimension(640, 480));
-		ViewFactories.createDefaultFrame(this);
+		ViewFactory.createDefaultFrame(this);
 		createMenuBar();
 	}
 
