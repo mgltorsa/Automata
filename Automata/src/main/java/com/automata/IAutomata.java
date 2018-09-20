@@ -21,12 +21,9 @@ public interface IAutomata {
 	public IState transitionFunction(IState state, String stimulus);
 	public IState getState(String id);
 	public IState getInitState();
-	public ArrayList<ITransition> getTransitions(IState state);
 	public String getLanguage();
 	public void setLanguage(String language);
 	public ArrayList<IState> getStates();
-	public ArrayList<IState> getExtendendTransition(String stimulus);
-	public ArrayList<IState> getExtendendTransition(IState state, String stimulus);
 	public IAutomata getEquivalent();
 
 	

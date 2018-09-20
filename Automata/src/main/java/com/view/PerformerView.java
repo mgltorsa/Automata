@@ -4,7 +4,10 @@ package com.view;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,10 +25,12 @@ public class PerformerView extends JFrame implements ActionListener{
 	
 	public static void main(String[] args) {
 		try {
-			JFrame.setDefaultLookAndFeelDecorated(true);
-			JDialog.setDefaultLookAndFeelDecorated(true);
-			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//			JFrame.setDefaultLookAndFeelDecorated(true);
+//			JDialog.setDefaultLookAndFeelDecorated(true);
 			PerformerView frame = PerformerView.getInstance();
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+			
+			SwingUtilities.updateComponentTreeUI(frame);
 			frame.setVisible(true);
 
 		} catch (Exception e) {
@@ -38,6 +43,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	private PerformerView() {
 		ViewFactory.createDefaultFrame(this);
 		contentPane = (JPanel) this.getContentPane();
+		this.setSize(520, 350);
 		setResizable(false);
 		createPaneButtons();
 
@@ -51,21 +57,21 @@ public class PerformerView extends JFrame implements ActionListener{
 
 	private void createPaneButtons() {
 		contentPane.setLayout(null);
-		ButtonPanel createMachine = new ButtonPanel();
+		ButtonPane createMachine = new ButtonPane();
 		createMachine.setBounds(38, 40, 151, 109);
 		createMachine.setBackground(ViewFactory.ButtonPaneBackgorund);
 		createMachine.setCommand(CREATE);
 		createMachine.setMessage(CREATE);
 		contentPane.add(createMachine);
 		
-		ButtonPanel instructions = new ButtonPanel();
+		ButtonPane instructions = new ButtonPane();
 		instructions.setBounds(175, 169, 151, 109);
 		instructions.setBackground(ViewFactory.ButtonPaneBackgorund);
 		instructions.setCommand(ABOUT);
 		instructions.setMessage(ABOUT);
 		contentPane.add(instructions);
 		
-		ButtonPanel loadFile = new ButtonPanel();
+		ButtonPane loadFile = new ButtonPane();
 		loadFile.setBounds(307, 40, 151, 109);
 		loadFile.setBackground(ViewFactory.ButtonPaneBackgorund);
 		loadFile.setCommand(LOAD);
@@ -83,8 +89,8 @@ public class PerformerView extends JFrame implements ActionListener{
 		
 	}
 
-	private void addListeners(ButtonPanel... panels) {
-		for(ButtonPanel panel : panels) {
+	private void addListeners(ButtonPane... panels) {
+		for(ButtonPane panel : panels) {
 			panel.addContainerListener(this);
 		}
 		

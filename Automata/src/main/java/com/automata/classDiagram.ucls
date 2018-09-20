@@ -37,8 +37,8 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="5" language="java" name="com.automata.Language" project="Automata" 
-    file="/Automata/src/main/java/com/automata/Language.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="com.automata.Alphabet" project="Automata" 
+    file="/Automata/src/main/java/com/automata/Alphabet.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="255" y="521"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -65,45 +65,45 @@
     </display>  
   </class>  
   <association id="8">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="9" name="transitions">        
-        <position height="0" width="0" x="-250" y="95"/>      
-      </attribute>      
-      <multiplicity id="10" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="-250" y="95"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="4" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="11">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="12" name="states">        
-        <position height="0" width="0" x="336" y="279"/>      
-      </attribute>      
-      <multiplicity id="13" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="336" y="279"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="1" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="14">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="15" name="language">        
+      <attribute id="9" name="language">        
         <position height="0" width="0" x="-202" y="131"/>      
       </attribute>      
-      <multiplicity id="16" minimum="0" maximum="1">        
+      <multiplicity id="10" minimum="0" maximum="1">        
         <position height="0" width="0" x="-202" y="131"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="17">    
+  <realization id="11">    
     <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
+  <association id="12">    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="13" name="transitions">        
+        <position height="0" width="0" x="-250" y="95"/>      
+      </attribute>      
+      <multiplicity id="14" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="-250" y="95"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="15">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="16" name="states">        
+        <position height="0" width="0" x="336" y="279"/>      
+      </attribute>      
+      <multiplicity id="17" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="336" y="279"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <association id="18">    
     <end type="SOURCE" refId="7" navigable="false">      
       <attribute id="19" name="initState">        

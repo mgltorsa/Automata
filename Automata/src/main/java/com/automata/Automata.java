@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class Automata implements IAutomata{
 	private String id;
-	private Language language;
+	private Alphabet language;
 	private IState initState;
 	private HashMap<String,IState> states;
 	
@@ -24,7 +24,7 @@ public class Automata implements IAutomata{
 	
 	public Automata(String id) {
 		this.id=id;
-		language = new Language();
+		language = new Alphabet();
 		states = new HashMap<String, IState>();
 	}
 	
@@ -65,7 +65,7 @@ public class Automata implements IAutomata{
 
 
 	public void setLanguage(String language) {
-		this.language= new Language(language);
+		this.language= new Alphabet(language);
 		
 	}
 

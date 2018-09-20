@@ -10,6 +10,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JDesktopPane;
+import javax.swing.BoxLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 
 
 @SuppressWarnings("serial")
@@ -59,6 +65,11 @@ public class MainView extends JFrame implements ActionListener {
 		menuBar.add(create);
 		menuBar.add(about);
 		this.setJMenuBar(menuBar);
+		getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		getContentPane().add(splitPane);
 
 	}
 	
@@ -74,7 +85,7 @@ public class MainView extends JFrame implements ActionListener {
 		if (e.getActionCommand().equals(CREATE_SM)) {
 			if (viewer == null) {
 				viewer = new AutomataViewer(this);
-				this.add(viewer, BorderLayout.CENTER);
+				getContentPane().add(viewer, BorderLayout.CENTER);
 				revalidate();
 			}
 			else {
@@ -82,7 +93,7 @@ public class MainView extends JFrame implements ActionListener {
 				if(option == JOptionPane.YES_OPTION) {
 					this.remove(viewer);
 					viewer = new AutomataViewer(this);
-					this.add(viewer, BorderLayout.CENTER);
+					getContentPane().add(viewer, BorderLayout.CENTER);
 					revalidate();
 				}
 			}

@@ -26,8 +26,6 @@ public class ViewDialog extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		
-
 	}
 
 	public void showOnCenter() {

@@ -26,14 +26,10 @@ import org.graphstream.ui.view.util.ShortcutManager;
 import com.view.AutomataViewer;
 import com.view.ViewDialog;
 
-
-
-
 public class DefViewPanel extends ViewPanel implements WindowListener, ComponentListener {
 
 	public DefViewPanel(String identifier) {
 		super(identifier);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static final long serialVersionUID = -4489484861592064398L;
@@ -78,7 +74,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 
 	public DefViewPanel(Viewer viewer, String identifier, GraphRenderer renderer) {
 		super(identifier);
-
 		load(viewer, renderer);
 	}
 
@@ -86,7 +81,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		this.viewer = viewer;
 		this.graph = viewer.getGraphicGraph();
 		this.renderer = renderer;
-
 		setOpaque(false);
 		setDoubleBuffered(true);
 		setMouseManager(null);

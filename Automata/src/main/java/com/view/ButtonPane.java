@@ -1,5 +1,6 @@
 package com.view;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,14 +15,15 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
-public class ButtonPanel extends JPanel {
+public class ButtonPane extends JPanel {
 
-	protected int strokeSize = 2;
+	protected int strokeSize = 1;
 	/** Color of shadow */
 	protected Color shadowColor = Color.black;
 	/** Sets if it drops shadow */
@@ -47,9 +49,10 @@ public class ButtonPanel extends JPanel {
 	/**button command*/
 	protected String command;
 
-	public ButtonPanel() {
+	public ButtonPane() {
 		super();
 		setOpaque(false);
+		
 		listeners = new ArrayList<ActionListener>();
 		clickColor = ViewFactory.ButtonPanePressed;
 		backgroundColor = ViewFactory.ButtonPaneBackgorund;
@@ -87,15 +90,15 @@ public class ButtonPanel extends JPanel {
 			lblMessage.setFont(font);
 			
 		}
-	}
-
-	public void setClickColor(Color clickColor) {
-		this.clickColor = clickColor;
-	}
+	}	
+	
+	
 	
 	public void changeBackgroundColor(Color color) {
 		backgroundColor=color;
 	}
+	
+	
 	
 	public void changeClickColor(Color color) {
 		clickColor=color;
@@ -110,6 +113,7 @@ public class ButtonPanel extends JPanel {
 		Color shadowColorA = new Color(shadowColor.getRed(), shadowColor.getGreen(), shadowColor.getBlue(),
 				shadowAlpha);
 		Graphics2D graphics = (Graphics2D) g;
+		graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
 
 		// Sets antialiasing if HQ.
 		if (highQuality) {
