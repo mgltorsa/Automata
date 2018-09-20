@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 
 @SuppressWarnings("serial")
-public class Main extends JFrame implements ActionListener {
+public class MainView extends JFrame implements ActionListener {
 	public final String LOAD = "Cargar";
 	public final String SAVE = "Guardar";
 	public final String CREATE_SM = "Crear maquina de estados";
@@ -21,11 +21,13 @@ public class Main extends JFrame implements ActionListener {
 	public final String ABOUT = "Acerca";
 
 	private AutomataViewer viewer;
-
-	public Main() {
+	private static MainView mainView;
+	
+	private MainView() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(1080, 640));
 		setPreferredSize(new Dimension(640, 480));
+		ViewFactories.createDefaultFrame(this);
 		createMenuBar();
 	}
 
@@ -59,6 +61,13 @@ public class Main extends JFrame implements ActionListener {
 		this.setJMenuBar(menuBar);
 
 	}
+	
+	public static MainView getInstance() {
+		if(mainView ==null) {
+			mainView= new MainView();
+		}
+		return mainView;
+	}
 
 	public void actionPerformed(ActionEvent e) {
 
@@ -89,12 +98,12 @@ public class Main extends JFrame implements ActionListener {
 	
 	@Override
 	public void dispose() {	
-		
-		System.exit(0);
+		super.dispose();
+		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
 
 	public static void main(String[] args) {
-		Main main = new Main();
+		MainView main = new MainView();
 		main.setVisible(true);
 	}
 
