@@ -32,7 +32,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		super(identifier);
 	}
 
-	private static final long serialVersionUID = -4489484861592064398L;
 
 	/**
 	 * Parent viewer.

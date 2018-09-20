@@ -9,5 +9,6 @@ package com.automata;
  */
 public interface ITransition {
 
+	public int suma(int a, int b);
 	
 }
