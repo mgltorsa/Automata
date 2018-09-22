@@ -37,30 +37,25 @@ public class Automata implements IAutomata{
 		return id;
 	}
 	public void addState(String id) {
-		// TODO Auto-generated method stub
 		
 	}	
 
 	
 	public IState getState(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return states.get(name);
 	}
 	
 	public IState getInitState() {
-		//TODO
-		return null;
+		return initState;
 	}
 	
-	public ArrayList<ITransition> getTransitions(IState state) {
-		// TODO Auto-generated method stub
-		return null;
+	public HashMap<String ,ITransition> getTransitions(IState state) {
+		return state.getTransitions();
 	}
 
 
 	public String getLanguage() {
-		// TODO Auto-generated method stub
-		return null;
+		return language.toString();
 	}
 
 
@@ -69,7 +64,11 @@ public class Automata implements IAutomata{
 		
 	}
 
-
+	/**retornar camino
+	 * 
+	 * @param stimulus
+	 * @return
+	 */
 	public ArrayList<IState> getStates(String stimulus) {
 		// TODO Auto-generated method stub
 		return null;
@@ -81,19 +80,19 @@ public class Automata implements IAutomata{
 		return null;
 	}
 
-	public void addTransition(IState from, IState to, ITransition transition) {
+	
+	public void addTransition(IState from, ITransition transition) {
 		// TODO Auto-generated method stub
-		
+
+		from.addTransition(transition);
 	}
 
 	public IState transitionFunction(IState state, String stimulus) {
-		// TODO Auto-generated method stub
-		return null;
+		return state.getTransitions().get(stimulus).getStateFinal();
 	}
 
 	public ArrayList<IState> getExtendendTransition(String stimulus) {
-		// TODO Auto-generated method stub
-		return null;
+		return getExtendendTransition(initState, stimulus);
 	}
 
 	public ArrayList<IState> getExtendendTransition(IState state, String stimulus) {
@@ -101,19 +100,21 @@ public class Automata implements IAutomata{
 		return null;
 	}
 
-	public ArrayList<IState> getStates() {
-		// TODO Auto-generated method stub
-		return null;
+	public HashMap<String,IState> getStates() {
+		return states;
 	}
 
 	public void setInitialState(IState state) {
-		// TODO Auto-generated method stub
-		
+		initState=state;
+		String id=state.getId();
+		if(!states.containsKey(id)) {
+			states.put(id, state);
+		}
 	}
 
 	public void setInitialState(String id) {
-		// TODO Auto-generated method stub
-		
+		initState=states.get(id);
+
 	}
 
 	public void addAll(IState... states) {
@@ -121,7 +122,5 @@ public class Automata implements IAutomata{
 			this.states.put(state.getId(), state);
 		}
 		
-	}
-	
-	
+	}	
 }

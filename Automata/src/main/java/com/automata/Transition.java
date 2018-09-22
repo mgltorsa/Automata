@@ -1,25 +1,33 @@
+
 /**
  * 
  */
 package com.automata;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Miguel
  *
  */
 public class Transition implements ITransition {
-
-	private IState fromState;
+	private String stimulus;
 	private IState toState;
-	public Transition() {
+	
+	public Transition(String s,IState fin) {
+		stimulus=s;
+		toState=fin;
 	}
-
-	public int suma(int a, int b) {
-		// TODO Auto-generated method stub
-		return 0;
+	public String getstimulus() {
+		return stimulus;
+	}
+	public void setstimulus(String st) {
+		stimulus=st;
+	}
+	public IState getStateFinal() {
+		return toState;
+	}
+	public void setStateFinal(IState fin) {
+		toState=fin;
 	}
 	
 }

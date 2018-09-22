@@ -1,3 +1,4 @@
+
 /**
  * 
  */
@@ -9,6 +10,8 @@ package com.automata;
  */
 public interface ITransition {
 
-	public int suma(int a, int b);
-	
-}
+	public String getstimulus();
+	public void setstimulus(String st);
+	public IState getStateFinal();
+	public void setStateFinal(IState fin);
+	}

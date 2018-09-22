@@ -3,42 +3,45 @@
  */
 package com.automata;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Miguel
  *
  */
 public class State implements IState{
-
-	private ArrayList<ITransition> transitions;
+	private String id;
+	private HashMap<String ,ITransition> transitions;
 
 	/**
 	 * 
 	 */
-	public State() {
-		transitions = new ArrayList<ITransition>();
+	
+	public State(String id) {
+		transitions = new HashMap<String,ITransition>();
+		this.id=id;
 	}
 	
 	public void setId(String id) {
 		// TODO Auto-generated method stub
-		
+		this.id=id;
 	}
 
 	
 	public String getId() {
 		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
 
-	public ArrayList<ITransition> getTransitions() {
+	public HashMap<String ,ITransition> getTransitions() {
 		// TODO Auto-generated method stub
 		return transitions;
 	}
 
 	
-	public void addTransition(IState to, ITransition transition) {
+	public void addTransition( ITransition transition) {
 		// TODO Auto-generated method stub
+		transitions.put(transition.getstimulus(),transition);
 		
 	}	
 }
