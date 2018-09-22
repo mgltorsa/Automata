@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 
-
 import org.graphstream.ui.swingViewer.GraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
@@ -32,7 +31,7 @@ public class ContainView extends DefViewPanel {
 	public void openInAFrame(boolean on) {
 		if (on) {
 			if (viewDialog == null) {
-				viewDialog = new ViewDialog("Routing");
+				viewDialog = new ViewDialog("automaton");
 				viewDialog.setLayout(new BorderLayout());
 				viewDialog.add(this, BorderLayout.CENTER);
 
@@ -76,7 +75,6 @@ public class ContainView extends DefViewPanel {
 	}
 
 	public ViewDialog getFrame() {
-		// TODO Auto-generated method stub
 		return viewDialog;
 	}
 

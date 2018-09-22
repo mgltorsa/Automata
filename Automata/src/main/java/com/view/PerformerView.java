@@ -32,13 +32,11 @@ public class PerformerView extends JFrame implements ActionListener{
 			
 			SwingUtilities.updateComponentTreeUI(frame);
 			frame.setVisible(true);
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	
+	}	
 	
 	private PerformerView() {
 		ViewFactory.createDefaultFrame(this);
@@ -57,25 +55,30 @@ public class PerformerView extends JFrame implements ActionListener{
 
 	private void createPaneButtons() {
 		contentPane.setLayout(null);
-		ButtonPane createMachine = new ButtonPane();
+		ButtonPanel createMachine = new ButtonPanel();
 		createMachine.setBounds(38, 40, 151, 109);
 		createMachine.setBackground(ViewFactory.ButtonPaneBackgorund);
 		createMachine.setCommand(CREATE);
 		createMachine.setMessage(CREATE);
+		createMachine.setIcon(ViewFactory.getIcon(ViewFactory.CreateIcon));
+
 		contentPane.add(createMachine);
 		
-		ButtonPane instructions = new ButtonPane();
+		ButtonPanel instructions = new ButtonPanel();
 		instructions.setBounds(175, 169, 151, 109);
 		instructions.setBackground(ViewFactory.ButtonPaneBackgorund);
 		instructions.setCommand(ABOUT);
 		instructions.setMessage(ABOUT);
+		instructions.setIcon(ViewFactory.getIcon(ViewFactory.AboutIcon));
+
 		contentPane.add(instructions);
 		
-		ButtonPane loadFile = new ButtonPane();
+		ButtonPanel loadFile = new ButtonPanel();
 		loadFile.setBounds(307, 40, 151, 109);
 		loadFile.setBackground(ViewFactory.ButtonPaneBackgorund);
 		loadFile.setCommand(LOAD);
 		loadFile.setMessage(LOAD);
+		loadFile.setIcon(ViewFactory.getIcon(ViewFactory.UploadIcon));
 
 		contentPane.add(loadFile);
 		addListeners(createMachine,loadFile,instructions);
@@ -89,8 +92,8 @@ public class PerformerView extends JFrame implements ActionListener{
 		
 	}
 
-	private void addListeners(ButtonPane... panels) {
-		for(ButtonPane panel : panels) {
+	private void addListeners(ButtonPanel... panels) {
+		for(ButtonPanel panel : panels) {
 			panel.addContainerListener(this);
 		}
 		

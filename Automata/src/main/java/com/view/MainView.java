@@ -16,7 +16,9 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
@@ -28,13 +30,39 @@ public class MainView extends JFrame implements ActionListener {
 
 	private AutomataViewer viewer;
 	private static MainView mainView;
-	
+
 	private MainView() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(1080, 640));
 		setPreferredSize(new Dimension(640, 480));
 		ViewFactory.createDefaultFrame(this);
 		createMenuBar();
+		initializePanels();
+	}
+
+	private void initializePanels() {
+		getContentPane().setLayout(null);
+
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setSize(new Dimension(1075, 640));
+//		splitPane.setBounds(0, 196, 1074, 640);
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		getContentPane().add(splitPane);
+		
+		JTabbedPane tabbedPaneNorth = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
+		tabbedPaneNorth.setBorder(new LineBorder(new Color(0, 0, 0)));
+		tabbedPaneNorth.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPaneNorth.setSelectedIndex(-1);
+		splitPane.setLeftComponent(tabbedPaneNorth);
+		
+		JTabbedPane tabbedPaneSouth = new AutomataViewer(this,AutomataViewer.AUTOMATON_VIEWER);
+//		JTabbedPane tabbedPaneSouth = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPaneSouth.setBorder(new LineBorder(new Color(0, 0, 0)));
+		tabbedPaneSouth.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPaneSouth.setSelectedIndex(-1);
+		splitPane.setRightComponent(tabbedPaneSouth);
+
 	}
 
 	private void createMenuBar() {
@@ -65,57 +93,49 @@ public class MainView extends JFrame implements ActionListener {
 		menuBar.add(create);
 		menuBar.add(about);
 		this.setJMenuBar(menuBar);
-		getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		getContentPane().add(splitPane);
 
 	}
-	
+
 	public static MainView getInstance() {
-		if(mainView ==null) {
-			mainView= new MainView();
+		if (mainView == null) {
+			mainView = new MainView();
 		}
 		return mainView;
+	}
+
+	@Override
+	public void setVisible(boolean b) {
+		super.setVisible(b);
+		this.setExtendedState(NORMAL);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals(CREATE_SM)) {
 			if (viewer == null) {
-				viewer = new AutomataViewer(this);
+				viewer = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
 				getContentPane().add(viewer, BorderLayout.CENTER);
 				revalidate();
-			}
-			else {
+			} else {
 				int option = JOptionPane.showConfirmDialog(this, "¿Desea crear uno nuevo?");
-				if(option == JOptionPane.YES_OPTION) {
+				if (option == JOptionPane.YES_OPTION) {
 					this.remove(viewer);
-					viewer = new AutomataViewer(this);
+					viewer = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
 					getContentPane().add(viewer, BorderLayout.CENTER);
 					revalidate();
 				}
 			}
-		}
-		else if(e.getActionCommand().equals(ABOUT)) {
-			if(viewer!=null) {
+		} else if (e.getActionCommand().equals(ABOUT)) {
+			if (viewer != null) {
 				viewer.test();
 			}
 		}
 
 	}
-	
-	
+
 	@Override
-	public void dispose() {	
+	public void dispose() {
 		super.dispose();
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
-
-	public static void main(String[] args) {
-		MainView main = new MainView();
-		main.setVisible(true);
-	}
-
 }

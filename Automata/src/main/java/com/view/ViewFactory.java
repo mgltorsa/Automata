@@ -7,14 +7,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+
 public final class ViewFactory {
 	
 	public final static Color FrameBackground = new Color(255, 160, 122);
 	public final static Color FrameForeground = new Color(89, 63, 98);
-	public final static Color PaneBackground= new Color(79, 81, 140);
-	public final static Color PaneForeground= new Color(255, 204, 102);
-	public final static Color ButtonPaneBackgorund= new Color(144,122,214);
-	public final static Color ButtonPanePressed= new Color(87,74,130);
+	public final static Color PaneBackground= new Color(250, 250, 250);
+	public final static Color PaneForeground= Color.LIGHT_GRAY;
+	public final static Color ButtonPaneBackgorund= new Color(250,250,250);
+	public final static Color ButtonPanePressed= new Color(190,190,190);
+	public final static String UploadIcon = "/img/upload.png";
+	public final static String CreateIcon = "/img/machine.png";
+	public final static String AboutIcon = "/img/information.png";
+
 
 	public final static void createDefaultFrame(JFrame frame) {
 		frame.setBackground(FrameBackground);
@@ -32,7 +37,10 @@ public final class ViewFactory {
 		
 	}
 	
-	public final static ImageIcon getUploadIcon() {
-		return null;
+	/**Path without root directory*/
+	public final static ImageIcon getIcon(String path) {
+		
+		String root = System.getProperty("user.dir");
+		return new ImageIcon(root+path);
 	}
 }

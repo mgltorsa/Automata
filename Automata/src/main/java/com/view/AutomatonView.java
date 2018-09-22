@@ -3,6 +3,7 @@ package com.view;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,17 +25,21 @@ import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.Timer;
 import javax.swing.ToolTipManager;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 public class AutomatonView extends JPanel implements ActionListener {
 	JComboBox<Character> cbx;
 	JComponent root;
 
-	public AutomatonView(String title) {
-		setBorder(new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP,
-				new Font("Tahoma", Font.BOLD, 16), null));
-		setFocusable(true);
+	public AutomatonView() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setFocusable(true);
+	}
+	
+	public void setTitle(String title) {
+		setBorder(new TitledBorder(new LineBorder(Color.LIGHT_GRAY), title, TitledBorder.LEADING, TitledBorder.TOP,
+				new Font("Tahoma", Font.BOLD, 16), null));
 	}
 
 	public void setStateMachineView() {
@@ -43,7 +48,13 @@ public class AutomatonView extends JPanel implements ActionListener {
 		cbx.setEditable(true);
 		cbx.addItem('a');
 		cbx.setFocusable(true);
-		cbx.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+		cbx.getEditor().getEditorComponent().addKeyListener(createKeyListener());
+
+		add(cbx);
+	}
+
+	private KeyListener createKeyListener() {
+		KeyListener listener = new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
@@ -77,9 +88,8 @@ public class AutomatonView extends JPanel implements ActionListener {
 				    t.start();
 				}
 			}
-		});
-
-		add(cbx);
+		};
+		return listener;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -89,6 +99,11 @@ public class AutomatonView extends JPanel implements ActionListener {
 	public void setRoot(JComponent automataViewer) {
 		this.root = automataViewer;
 
+	}
+
+	public void setAutomatonView() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
