@@ -3,20 +3,21 @@
  */
 package com.statesMachine;
 
+import com.automata.Automata;
 import com.automata.IState;
-import com.automata.ITransition;
 
 /**
  * @author Miguel
  *
  */
-public class Mealy extends StatesMachine{
+public class Mealy extends Automata implements IMachineFunction{
+
+	public String function(IState state, String stimulus) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 	
-	@Override
-	public void addTransition(IState from, IState to, ITransition transition) {
-		// TODO Auto-generated method stub
-		super.addTransition(from, to, transition);
-	}
+
 }

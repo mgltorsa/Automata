@@ -3,7 +3,7 @@
  */
 package com.automata;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author Miguel
@@ -13,6 +13,6 @@ public interface IState {
 
 	public void setId(String id);
 	public String getId();
-	public ArrayList<ITransition> getTransitions();
-	public void addTransition(IState to, ITransition transition);
+	public HashMap<String ,ITransition> getTransitions();
+	public void addTransition(ITransition transition);
 }
