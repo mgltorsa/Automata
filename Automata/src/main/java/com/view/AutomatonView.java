@@ -20,6 +20,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JTextField;
@@ -235,10 +236,10 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 								if (!model.validateData(row, column)) {
 									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
 									setValueAt("", row, column);
-								}else {
+								} else {
 									addRowToAutomata(row);
 								}
-							}  else if (column == 0) {
+							} else if (column == 0) {
 								addRowToAutomata(row);
 								model.setEditable(row, column, false);
 							}
@@ -309,9 +310,12 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 			if (machineType == AutomataManager.MEALY) {
 				setMealyModel();
+
 			} else {
 				setMooreModel();
 			}
+			viewer.createMachine(machineType);
+
 		}
 
 	}
@@ -319,7 +323,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	public void setMealyModel() {
 		machineType = AutomataManager.MEALY;
 		changeTableModel();
-		viewer.createMachine(machineType);
 
 	}
 
@@ -343,7 +346,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	public void setMooreModel() {
 		machineType = AutomataManager.MOORE;
 		changeTableModel();
-		viewer.createMachine(machineType);
 
 	}
 
@@ -538,11 +540,13 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 		private AutomatonView view;
 		private ArrayList<Boolean> editables;
+		boolean validate;
 
 		public AutomatonTableModel(AutomatonView view) {
 			super();
 			this.view = view;
 			editables = new ArrayList<Boolean>();
+			validate = true;
 		}
 
 		public void setEditable(int row, int column, boolean isEditable) {
@@ -558,12 +562,14 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		}
 
 		public boolean validateData(int row, int column) {
-			String data = (String) getValueAt(row, column);
-			if (data != null && !data.isEmpty()) {
-				if (getColumnName(column).contains("out")) {
-					return view.validateData(data, OUTPUT);
-				} else {
-					return view.validateData(data, STATE);
+			if (validate) {
+				String data = (String) getValueAt(row, column);
+				if (data != null && !data.isEmpty()) {
+					if (getColumnName(column).contains("out")) {
+						return view.validateData(data, OUTPUT);
+					} else {
+						return view.validateData(data, STATE);
+					}
 				}
 			}
 
@@ -613,7 +619,15 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 					}
 				}
 			}
+		}
 
+		public int getColumnIndex(String name) {
+			for (int i = 0; i < columnIdentifiers.size(); i++) {
+				if (columnIdentifiers.elementAt(i).equals(name)) {
+					return i;
+				}
+			}
+			return -1;
 		}
 
 		@Override
@@ -626,6 +640,50 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				removeColumn(i);
 			}
 		}
+
+		public void setValidate(boolean a) {
+			validate = a;
+		}
+
+		public void parseInfo(HashMap<String, String> info) {
+			int row = 0;
+			while (info.containsKey(row + "")) {
+				String[] rowData = info.get(row).split(",");
+				String[] data = new String[rowData.length];
+				if(rowData.length>=5) {
+				}
+				row++;
+			}
+		}
+
+	}
+
+	public void setDataAutomata(HashMap<String, String> info) {
+		model.setValidate(false);
+		model.clearColumns();
+		parseInfo(info);
+
+	}
+
+	private void parseInfo(HashMap<String, String> info) {
+		String name = info.get("name");
+		this.textField.setText(name);
+		this.machineType = info.get("type");
+		String[] alphabet = info.get("alphabet").split(",");
+		setFunctionalAlphabet(true);
+		comboBox.removeAllItems();
+		for (int i = 0; i < alphabet.length; i++) {
+			comboBox.addItem(alphabet[i].charAt(i));
+		}
+
+		setFunctionalAlphabet(false);
+		if (machineType.equals(AutomataManager.MEALY)) {
+			setMealyModel();
+		} else {
+			setMooreModel();
+		}
+
+		model.parseInfo(info);
 
 	}
 
