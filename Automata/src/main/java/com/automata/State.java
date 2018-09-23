@@ -44,4 +44,9 @@ public class State implements IState{
 		transitions.put(transition.getstimulus(),transition);
 		
 	}	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return id;
+	}
 }

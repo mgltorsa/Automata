@@ -2,6 +2,7 @@ package com.view;
 
 import java.awt.Color;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -29,5 +30,9 @@ public final class ViewFactory {
 	}
 	public final static void createDefaultPane(JPanel panel) {
 		
+	}
+	
+	public final static ImageIcon getUploadIcon() {
+		return null;
 	}
 }

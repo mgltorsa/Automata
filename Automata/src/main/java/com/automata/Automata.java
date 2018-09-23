@@ -5,12 +5,15 @@ package com.automata;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+
 
 /**
  * @author Miguel
  *
  */
-public class Automata implements IAutomata{
+public abstract class Automata implements IAutomata{
 	private String id;
 	private Alphabet language;
 	private IState initState;
@@ -22,7 +25,7 @@ public class Automata implements IAutomata{
 	}
 	
 	
-	public Automata(String id) {
+	 public Automata(String id) {
 		this.id=id;
 		language = new Alphabet();
 		states = new HashMap<String, IState>();
@@ -37,7 +40,8 @@ public class Automata implements IAutomata{
 		return id;
 	}
 	public void addState(String id) {
-		
+		IState state=new State(id);
+		states.put(id, state);
 	}	
 
 	
@@ -54,8 +58,8 @@ public class Automata implements IAutomata{
 	}
 
 
-	public String getLanguage() {
-		return language.toString();
+	public Alphabet getLanguage() {
+		return language;
 	}
 
 
@@ -64,26 +68,8 @@ public class Automata implements IAutomata{
 		
 	}
 
-	/**retornar camino
-	 * 
-	 * @param stimulus
-	 * @return
-	 */
-	public ArrayList<IState> getStates(String stimulus) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	public IAutomata getEquivalent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
 	public void addTransition(IState from, ITransition transition) {
-		// TODO Auto-generated method stub
-
 		from.addTransition(transition);
 	}
 
@@ -96,8 +82,15 @@ public class Automata implements IAutomata{
 	}
 
 	public ArrayList<IState> getExtendendTransition(IState state, String stimulus) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<IState> ret=new ArrayList<IState>();
+		for (int i = 0; i < stimulus.length(); i++) {
+			String st=stimulus.charAt(i)+"";
+			ret.add(state);
+			state=transitionFunction(state, st);
+		}
+		ret.add(state);
+
+		return ret;
 	}
 
 	public HashMap<String,IState> getStates() {
@@ -111,6 +104,7 @@ public class Automata implements IAutomata{
 			states.put(id, state);
 		}
 	}
+	
 
 	public void setInitialState(String id) {
 		initState=states.get(id);
@@ -122,5 +116,68 @@ public class Automata implements IAutomata{
 			this.states.put(state.getId(), state);
 		}
 		
+	}
+
+
+	public ITransition getTransition(IState state, String stimulus) {
+
+		return state.getTransitions().get(stimulus);
 	}	
+	
+	/**this method get the final partiton 
+	 * 
+	 * @param firstPartition first partiton with the groups of states with response in comon.firstPartition!=null and all groups !=null
+	 * @return the final partiton, when Pn-1=Pn 
+	 */
+	public ArrayList<HashSet<IState>> getFinalPartition(ArrayList<HashSet<IState>> firstPartition) {
+		ArrayList<HashSet<IState>> finalPartition=new ArrayList<HashSet<IState>>();
+		Alphabet alphabet=getLanguage();
+		char[] alp=alphabet.getAlphabet();
+		HashSet<IState> partitionAux=new HashSet<IState>();
+
+		boolean change=false;
+		for (int k=0;k<firstPartition.size();) {
+			HashSet<IState> newPartiton=new HashSet<IState>();
+			Iterator<IState> iterator=firstPartition.get(k).iterator();
+
+			if(!partitionAux.isEmpty()) {
+				iterator=partitionAux.iterator();
+				partitionAux=new HashSet<IState>();
+			}
+			IState previus=iterator.next();
+			newPartiton.add(previus);
+			while(iterator.hasNext()) {
+				IState state=iterator.next();
+				boolean same=false;
+				for (int i = 0; i < alp.length; i++) {
+					IState fP=transitionFunction(previus, alp[i]+"");
+					IState sP=transitionFunction(state, alp[i]+"");
+					for (HashSet<IState> col : firstPartition) {
+						if(col.contains(fP)) {
+							same=col.contains(sP);
+							break;
+						}
+					}
+				}
+				if(same) {
+					newPartiton.add(state);
+					previus=state;
+				}else {
+					partitionAux.add(state);
+					change=true;
+				}
+				
+			}
+			finalPartition.add(newPartiton);
+			if(partitionAux.isEmpty()) {
+				k++;
+			}
+			
+		}
+		if(change) {
+			return getFinalPartition(finalPartition);
+		}
+		return finalPartition;
+		
+	}
 }

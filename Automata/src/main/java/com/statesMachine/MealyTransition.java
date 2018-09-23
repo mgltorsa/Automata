@@ -13,8 +13,8 @@ import com.automata.Transition;
 public class MealyTransition extends Transition implements IMealyTransition{
 	private String response;
 	
-	public MealyTransition(String s,String response, IState fin) {
-		super(s, fin);
+	public MealyTransition(String stimulus,String response, IState fin) {
+		super(stimulus, fin);
 		this.response=response;
 	}
 	public String getResponse() {
@@ -23,5 +23,9 @@ public class MealyTransition extends Transition implements IMealyTransition{
 	public void setResponse(String rs) {
 		response=rs;
 	}
-
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString()+"|"+response;
+	}
 }
