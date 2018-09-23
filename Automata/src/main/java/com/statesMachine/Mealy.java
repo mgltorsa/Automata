@@ -11,7 +11,8 @@ import com.automata.*;
 
 /**
  * @author Miguel
- *
+ * @author alejandro
+ * class used for modeling a Automata of type Mealy
  */
 @SuppressWarnings("serial")
 public class Mealy extends Automata implements IMealy{

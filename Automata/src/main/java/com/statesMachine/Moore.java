@@ -10,6 +10,8 @@ import com.automata.*;
 
 /**
  * @author Miguel
+ * @author alejandro 
+ * class used for modeling a Automata of type Mealy
  *
  */
 public class Moore extends Automata implements IMoore{
