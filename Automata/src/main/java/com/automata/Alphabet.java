@@ -3,11 +3,13 @@
  */
 package com.automata;
 
+import java.io.Serializable;
+
 /**
  * @author Miguel
  *
  */
-public class Alphabet {
+public class Alphabet implements Serializable{
 
 	private char[] alphabet;
 	private String alp;

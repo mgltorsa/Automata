@@ -26,7 +26,6 @@ import com.statesMachine.MealyTransition;
 import com.statesMachine.Moore;
 import com.statesMachine.MooreState;
 
-
 public class AutomataManager {
 	public final static String MEALY = "MEALY";
 	public final static String MOORE = "MOORE";
@@ -122,7 +121,7 @@ public class AutomataManager {
 			for (int i = 1; i < info.length - 1; i += 2) {
 				String[] transition = info[i].split(":");
 				String outputInfo[] = info[i + 1].split(":");
-				if (outputInfo.length > 1 && transition.length>1) {
+				if (outputInfo.length > 1 && transition.length > 1) {
 					String outputTransition = outputInfo[1];
 					data.put(TRANSITION_INPUT, transition[0]);
 					data.put(OUTPUT, outputTransition);
@@ -142,12 +141,12 @@ public class AutomataManager {
 		// of some state and Output is the output for moore state
 		// If is Moore: {Estado:id,input1:estadoId,input2:estadoId....,Output:output}
 		HashMap<String, String> data = new HashMap<String, String>();
-		
-		if(info[0].split(":").length<=1) {
+
+		if (info[0].split(":").length <= 1) {
 			return;
 		}
 		data.put(STATE, info[0].split(":")[1]);
-		if(info[info.length - 1].split(":").length<=1) {
+		if (info[info.length - 1].split(":").length <= 1) {
 			return;
 		}
 		data.put(OUTPUT, info[info.length - 1].split(":")[1]);
@@ -217,7 +216,6 @@ public class AutomataManager {
 				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: italic ;");
 		node.addAttribute("ui.label", node.getId());
 
-
 	}
 
 	private void setInitialNodeView(Node node, Graph graph) {
@@ -226,14 +224,13 @@ public class AutomataManager {
 				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: bold-italic ;");
 		node.addAttribute("ui.label", node.getId());
 
-
 	}
 
 	private void setDefaultEdgeModel(Edge edge, Graph graph) {
 		edge.addAttribute("ui.style",
 				"fill-color: rgb(250,124,97) ; text-color: black; text-style: italic ; text-size: 12px ; size: 3px ;");
 		String id = edge.getId();
-		
+
 		edge.addAttribute("ui.label", id);
 	}
 
@@ -272,18 +269,21 @@ public class AutomataManager {
 	}
 
 	public void serializeMachine(String path) throws Exception {
-			FileOutputStream fileOut = new FileOutputStream(new File(path));
-			ObjectOutputStream output = new ObjectOutputStream(fileOut);
-			output.writeObject(automaton);
-			output.close();
-		
+		File file = new File(path);
+		if(!file.exists()) {
+			file.createNewFile();
+		}
+		FileOutputStream fileOut = new FileOutputStream(file);
+		ObjectOutputStream output = new ObjectOutputStream(fileOut);
+		output.writeObject(automaton);
+		output.close();
 
 	}
 
 	public void load(String path) throws Exception {
 		FileInputStream fileIn = new FileInputStream(new File(path));
 		ObjectInputStream input = new ObjectInputStream(fileIn);
-		automaton=(IAutomata) input.readObject();
+		automaton = (IAutomata) input.readObject();
 		input.close();
 	}
 
@@ -337,7 +337,7 @@ public class AutomataManager {
 			} else {
 				for (int i = 0; i < transitions.length; i++) {
 					String idFinal = transitions[i].getStateFinal().getId();
-					line += "," + transitions[i].getstimulus()  + "," + idFinal;
+					line += "," + transitions[i].getstimulus() + "," + idFinal;
 				}
 				line += "," + ((IMooreState) state).getResponse();
 				map.put(rows + "", line);
@@ -365,6 +365,31 @@ public class AutomataManager {
 
 	public HashMap<String, String> getDataEquivalent() {
 		return getData(equivalent);
+	}
+
+	public boolean validateLanguage(String state, String data) {
+		if (automaton.getState(state) != null) {
+			Iterator<ITransition> iterator = automaton.getState(state).getTransitions().values().iterator();
+
+			if (automaton instanceof Mealy) {
+				while (iterator.hasNext()) {
+					IMealyTransition transition = (IMealyTransition) iterator.next();
+					if (transition.getResponse().equals(data)) {
+						return false;
+					}
+				}
+			}
+			if (automaton instanceof Moore) {
+				while (iterator.hasNext()) {
+					if (iterator.next().getStateFinal().getId().equals(data)) {
+						return false;
+					}
+				}
+			}
+			return true;
+
+		}
+		return true;
 	}
 
 }

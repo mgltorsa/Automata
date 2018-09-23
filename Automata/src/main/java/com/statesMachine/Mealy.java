@@ -11,8 +11,10 @@ import com.automata.*;
 
 /**
  * @author Miguel
- *
+ * @author alejandro
+ * class used for modeling a Automata of type Mealy
  */
+@SuppressWarnings("serial")
 public class Mealy extends Automata implements IMealy{
 
 	public String function(IState state, String stimulus) {
@@ -79,6 +81,11 @@ public class Mealy extends Automata implements IMealy{
 		for (String string : keys) {
 			HashSet<IState> proces=automata.get(string);
 			IState first=proces.iterator().next();
+			if(getInitState()!=null) {
+				if(proces.contains(getInitState())) {
+					mealy.setInitialState(mealy.getState(string));
+				}
+			}
 			for (char st : alp) {
 				IMealyTransition tran=(IMealyTransition) getTransition(first, st+"");
 				IState second=tran.getStateFinal();

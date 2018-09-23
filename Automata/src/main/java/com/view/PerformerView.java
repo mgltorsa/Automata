@@ -121,7 +121,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	}
 
 	private void loadFile() {		
-		//TODO
+		MainView.getInstance().load();
 	}
 
 	private void showCreateMachine() {

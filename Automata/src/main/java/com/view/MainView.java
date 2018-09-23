@@ -105,7 +105,7 @@ public class MainView extends JFrame implements ActionListener {
 
 	}
 
-	private void load() {
+	public void load() {
 		String path = PerformerView.getInstance().showLoadDialog();
 		if(path!=null) {
 			try {
@@ -114,6 +114,7 @@ public class MainView extends JFrame implements ActionListener {
 
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Error al cargar el archivo", "Fail load", JOptionPane.INFORMATION_MESSAGE);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -124,9 +125,10 @@ public class MainView extends JFrame implements ActionListener {
 			if(path!=null) {
 				try {
 					automataManager.serializeMachine(path);
+					JOptionPane.showMessageDialog(this, "Se ha guardado el archivo", "Correcto!", JOptionPane.INFORMATION_MESSAGE);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(this, "No se logró gurdar el archivo", "Fail load", JOptionPane.INFORMATION_MESSAGE);
-
+					e.printStackTrace();
 				}
 			}
 

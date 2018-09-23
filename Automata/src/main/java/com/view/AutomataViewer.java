@@ -48,8 +48,10 @@ public class AutomataViewer extends JPanel {
 		createMachine(AutomataManager.MEALY);
 	}
 
-	public boolean validateLanguage(String data) {
-		return main.getAutomataManager().validateLanguage(data);
+	public boolean validateLanguage(String state,String data) {
+		boolean belong= main.getAutomataManager().validateLanguage(data);
+		boolean notRepeat = main.getAutomataManager().validateLanguage(state,data);
+		return belong &&notRepeat;
 	}
 
 	public boolean validateState(String id) {
@@ -129,6 +131,7 @@ public class AutomataViewer extends JPanel {
 		}else {
 			info=main.getAutomataManager().getDataEquivalent();
 			equivalent.setDataAutomata(info);
+			this.add(equivalent);
 		}
 	}
 
