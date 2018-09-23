@@ -9,6 +9,7 @@ import com.automata.State;
  * @author Miguel
  *
  */
+@SuppressWarnings("serial")
 public class MooreState extends State implements IMooreState{
 	private String response;
 

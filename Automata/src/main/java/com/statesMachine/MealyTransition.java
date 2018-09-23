@@ -10,6 +10,7 @@ import com.automata.Transition;
  * @author Miguel
  *
  */
+@SuppressWarnings("serial")
 public class MealyTransition extends Transition implements IMealyTransition {
 	private String response;
 	

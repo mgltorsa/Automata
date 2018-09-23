@@ -13,6 +13,7 @@ import com.automata.*;
  * @author Miguel
  *
  */
+@SuppressWarnings("serial")
 public class Mealy extends Automata implements IMealy{
 
 	public String function(IState state, String stimulus) {
