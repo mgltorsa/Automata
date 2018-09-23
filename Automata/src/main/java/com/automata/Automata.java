@@ -49,6 +49,9 @@ public class Automata implements IAutomata{
 		return initState;
 	}
 	
+	public void removeState(String id) {
+		states.remove(id);
+	}
 	public HashMap<String ,ITransition> getTransitions(IState state) {
 		return state.getTransitions();
 	}

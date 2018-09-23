@@ -24,7 +24,6 @@ import org.graphstream.ui.view.util.MouseManager;
 import org.graphstream.ui.view.util.ShortcutManager;
 
 import com.view.AutomataViewer;
-import com.view.ViewDialog;
 
 @SuppressWarnings("serial")
 public class DefViewPanel extends ViewPanel implements WindowListener, ComponentListener {
@@ -225,7 +224,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			break;
 		case EXIT:
 			if (main != null) {
-				main.closeGraphDialog();
+//				main.closeGraphDialog();
 			}
 		}
 

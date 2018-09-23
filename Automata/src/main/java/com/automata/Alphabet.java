@@ -20,4 +20,14 @@ public class Alphabet {
 			alphabet[i]=info[i].charAt(0);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		String me = "";
+		for (int i = 0; i < alphabet.length-1; i++) {
+			me+=alphabet[i]+",";
+		}
+		me+=alphabet[alphabet.length-1];
+		return me;
+	}
 }

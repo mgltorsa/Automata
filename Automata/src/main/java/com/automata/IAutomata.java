@@ -25,6 +25,6 @@ public interface IAutomata {
 	public void setLanguage(String language);
 	public HashMap<String,IState> getStates();
 	public IAutomata getEquivalent();
-
+	public void removeState(String id);
 	
 }

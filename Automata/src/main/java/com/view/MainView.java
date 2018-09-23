@@ -10,15 +10,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JDesktopPane;
-import javax.swing.BoxLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.LineBorder;
+
+
+import com.automata.IAutomata;
+import com.statesMachine.Mealy;
+import com.statesMachine.Moore;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
@@ -29,41 +25,20 @@ public class MainView extends JFrame implements ActionListener {
 	public final String ABOUT = "Acerca";
 
 	private AutomataViewer viewer;
+	private IAutomata automata;
 	private static MainView mainView;
 
 	private MainView() {
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setMinimumSize(new Dimension(1080, 640));
-		setPreferredSize(new Dimension(640, 480));
+		setMinimumSize(new Dimension(960, 650));
+		setPreferredSize(new Dimension(960, 650));
 		ViewFactory.createDefaultFrame(this);
 		createMenuBar();
-		initializePanels();
+		pack();
 	}
 
-	private void initializePanels() {
-		getContentPane().setLayout(null);
 
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setSize(new Dimension(1075, 640));
-//		splitPane.setBounds(0, 196, 1074, 640);
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		getContentPane().add(splitPane);
-		
-		JTabbedPane tabbedPaneNorth = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
-		tabbedPaneNorth.setBorder(new LineBorder(new Color(0, 0, 0)));
-		tabbedPaneNorth.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabbedPaneNorth.setSelectedIndex(-1);
-		splitPane.setLeftComponent(tabbedPaneNorth);
-		
-		JTabbedPane tabbedPaneSouth = new AutomataViewer(this,AutomataViewer.AUTOMATON_VIEWER);
-//		JTabbedPane tabbedPaneSouth = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPaneSouth.setBorder(new LineBorder(new Color(0, 0, 0)));
-		tabbedPaneSouth.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabbedPaneSouth.setSelectedIndex(-1);
-		splitPane.setRightComponent(tabbedPaneSouth);
-
-	}
 
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
@@ -93,6 +68,11 @@ public class MainView extends JFrame implements ActionListener {
 		menuBar.add(create);
 		menuBar.add(about);
 		this.setJMenuBar(menuBar);
+		getContentPane().setLayout(new BorderLayout());
+		
+		viewer = new AutomataViewer(this);
+//		viewer.setBounds(0, 0, 574, 458);
+		getContentPane().add(viewer,BorderLayout.CENTER);
 
 	}
 
@@ -112,23 +92,14 @@ public class MainView extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals(CREATE_SM)) {
-			if (viewer == null) {
-				viewer = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
-				getContentPane().add(viewer, BorderLayout.CENTER);
-				revalidate();
-			} else {
-				int option = JOptionPane.showConfirmDialog(this, "¿Desea crear uno nuevo?");
-				if (option == JOptionPane.YES_OPTION) {
-					this.remove(viewer);
-					viewer = new AutomataViewer(this,AutomataViewer.STATE_MACHINE_VIEWER);
-					getContentPane().add(viewer, BorderLayout.CENTER);
-					revalidate();
+			if(viewer!=null) {
+				int option = JOptionPane.showConfirmDialog(null, "Borrara todo lo ingresado en la maquina, ¿desea hacerlo?");
+				if(option == JOptionPane.YES_OPTION) {
+					viewer.clear();
 				}
 			}
 		} else if (e.getActionCommand().equals(ABOUT)) {
-			if (viewer != null) {
-				viewer.test();
-			}
+			
 		}
 
 	}
@@ -138,4 +109,23 @@ public class MainView extends JFrame implements ActionListener {
 		super.dispose();
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
+	
+	public void createMachine(String type) {
+		if(type.equals(AutomatonView.MEALY)) {
+			automata=new Mealy();
+		}else if(type.equals(AutomatonView.MOORE)){
+			automata=new Moore();
+		}
+	}
+	
+	
+
+	public IAutomata getMachine() {
+		return automata;
+		
+	}
+
+
+
+	
 }

@@ -1,13 +1,10 @@
 package com.view;
 
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,9 +12,9 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class PerformerView extends JFrame implements ActionListener{
 
-	public final static String CREATE="Create state machine";
-	public final static String LOAD="Load file";
-	public final static String ABOUT="About program";
+	public final static String CREATE="Crear maquina de estado";
+	public final static String LOAD="Cargar archivo";
+	public final static String ABOUT="Sobre el programa (instrucciones y demas)";
 	public final static Font DEFAULT_FONT = new Font("Serif", Font.CENTER_BASELINE, 12);
 
 	private JPanel contentPane;

@@ -1,4 +1,4 @@
-package com.view;
+package com.graphicManagers;
 
 import java.awt.BorderLayout;
 
@@ -7,8 +7,6 @@ import java.awt.event.WindowEvent;
 
 import org.graphstream.ui.swingViewer.GraphRenderer;
 import org.graphstream.ui.view.Viewer;
-
-import com.graphicManagers.DefViewPanel;
 
 
 @SuppressWarnings("serial")
