@@ -93,4 +93,16 @@ public interface IAutomata extends Serializable {
 	 * @return Transition.
 	 */
 	public ITransition getTransition(IState state,String stimulus);
+	/**
+	 * remove state with id.
+	 * @param id. id != null and id is not empty.
+	 * @return Transition.
+	 */
+	public void removeState(String id);
+	/**
+	 * remove state with id.
+	 * @param state. state != null.
+	 * @return Transition.
+	 */
+	public void addState(IState state);
 }

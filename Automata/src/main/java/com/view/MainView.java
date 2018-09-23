@@ -11,7 +11,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-
 import manager.AutomataManager;
 
 @SuppressWarnings("serial")
@@ -28,7 +27,7 @@ public class MainView extends JFrame implements ActionListener {
 
 	private MainView() {
 		setResizable(true);
-		automataManager= new AutomataManager();
+		automataManager = new AutomataManager();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(960, 650));
 		setPreferredSize(new Dimension(960, 650));
@@ -36,8 +35,6 @@ public class MainView extends JFrame implements ActionListener {
 		createMenuBar();
 		pack();
 	}
-
-
 
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
@@ -68,10 +65,10 @@ public class MainView extends JFrame implements ActionListener {
 		menuBar.add(about);
 		this.setJMenuBar(menuBar);
 		getContentPane().setLayout(new BorderLayout());
-		
+
 		viewer = new AutomataViewer(this);
 //		viewer.setBounds(0, 0, 574, 458);
-		getContentPane().add(viewer,BorderLayout.CENTER);
+		getContentPane().add(viewer, BorderLayout.CENTER);
 
 	}
 
@@ -91,14 +88,38 @@ public class MainView extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals(CREATE_SM)) {
-			if(viewer!=null) {
-				int option = JOptionPane.showConfirmDialog(null, "Borrara todo lo ingresado en la maquina, ¿desea hacerlo?");
-				if(option == JOptionPane.YES_OPTION) {
+			if (viewer != null) {
+				int option = JOptionPane.showConfirmDialog(null,
+						"Borrara todo lo ingresado en la maquina, ¿desea hacerlo?");
+				if (option == JOptionPane.YES_OPTION) {
 					viewer.clear();
 				}
 			}
 		} else if (e.getActionCommand().equals(ABOUT)) {
-			
+
+		} else if (e.getActionCommand().equals(LOAD)) {
+			load();
+		} else if (e.getActionCommand().equals(SAVE)) {
+			save();
+		}
+
+	}
+
+	private void load() {
+		String path = PerformerView.getInstance().showLoadDialog();
+		if(path!=null) {
+			automataManager.load(path);
+			viewer.loadMachine();
+		}
+	}
+
+	private void save() {
+		if (automataManager.canSerializeMachine()) {
+			String path = PerformerView.getInstance().showSaveDialog();
+			if(path!=null) {
+				automataManager.serializeMachine(path);
+			}
+
 		}
 
 	}
@@ -108,13 +129,9 @@ public class MainView extends JFrame implements ActionListener {
 		super.dispose();
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
-	
+
 	public AutomataManager getAutomataManager() {
 		return automataManager;
 	}
-	
 
-
-
-	
 }

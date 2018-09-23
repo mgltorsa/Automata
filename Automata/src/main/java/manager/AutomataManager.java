@@ -1,9 +1,18 @@
 package manager;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Stack;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
 
 import com.automata.IAutomata;
 import com.automata.IState;
@@ -21,6 +30,7 @@ public class AutomataManager {
 	private final static String OUTPUT = "output";
 	private final static String TRANSITION_INPUT = "t_input";
 	private final static String TO_STATE = "to_state";
+	private static SpriteManager spriteManager = null;
 
 	private IAutomata automaton;
 	private IAutomata equivalent;
@@ -43,13 +53,15 @@ public class AutomataManager {
 	}
 
 	private void addState(HashMap<String, String> data) {
-		if (automaton instanceof Moore) {
-			IState state = createMooreState(data);
-			automaton.addState(state);
-		} else {
-			automaton.addState(data.get(STATE));
+		if (!existState(data.get(STATE))) {
+			if (automaton instanceof Moore) {
+				IState state = createMooreState(data);
+				automaton.addState(state);
+			} else {
+				automaton.addState(data.get(STATE));
+			}
 		}
-		
+
 	}
 
 	private IState createMooreState(HashMap<String, String> data) {
@@ -62,24 +74,24 @@ public class AutomataManager {
 		if (automaton instanceof Mealy) {
 			transition = createMealyTransition(data);
 		} else {
-			transition = new Transition(data.get(TRANSITION_INPUT), automaton.getState(TO_STATE));
+			transition = new Transition(data.get(TRANSITION_INPUT), automaton.getState(data.get(TO_STATE)));
 		}
 
-		automaton.addTransition(automaton.getState(data.get(STATE)), transition);
+		if (!automaton.getState(data.get(STATE)).getTransitions().containsKey(transition.getstimulus())) {
+			automaton.addTransition(automaton.getState(data.get(STATE)), transition);
+		}
 	}
 
 	private ITransition createMealyTransition(HashMap<String, String> data) {
 		ITransition transition = null;
-		if (automaton instanceof Mealy) {
-			transition = new MealyTransition(data.get(TRANSITION_INPUT), data.get(OUTPUT),
-					automaton.getState(TO_STATE));
-		}
+		transition = new MealyTransition(data.get(TRANSITION_INPUT), data.get(OUTPUT),
+				automaton.getState(data.get(TO_STATE)));
 
 		return transition;
 	}
 
 	public void removeState(String id) {
-		System.out.println("removed "+id);
+		System.out.println("removed " + id);
 		automaton.removeState(id);
 
 	}
@@ -151,29 +163,153 @@ public class AutomataManager {
 
 	public void setName(String id) {
 		automaton.setId(id);
-		
+
 	}
 
 	public Graph getMachineGraphicGraph() {
-		// TODO Auto-generated method stub
-		return convertToGraph(automaton);
+		return parseGraph(automaton);
 	}
 
-	private Graph convertToGraph(IAutomata automaton) {
-		Graph graph= new MultiGraph(automaton.getId());
-		automaton.getInitState();
-		
+	private Graph parseGraph(IAutomata automaton) {
+		Graph graph = null;
+		if (automaton != null && !automaton.getStates().isEmpty()) {
+			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+			graph = new MultiGraph(automaton.getId(), false, false);
+			spriteManager = new SpriteManager(graph);
+			IState initState = automaton.getInitState();
+			HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
+			Stack<IState> stack = new Stack<IState>();
+			setNodesModelToGraph(initState, automaton, graph);
+			graphicGraphDfs(initState, stack, graph, visited);
+			while (!stack.isEmpty()) {
+				IState tempState = stack.pop();
+				graphicGraphDfs(tempState, stack, graph, visited);
+			}
+		}
 		return graph;
 	}
 
+	private void setNodesModelToGraph(IState initState, IAutomata automaton, Graph graph) {
+		graph.addNode(initState.getId());
+		setInitialNodeView(graph.getNode(initState.getId()), graph);
+		for (IState state : automaton.getStates().values()) {
+			graph.addNode(state.getId());
+			setDefaultNodeView(graph.getNode(state.getId()), graph);
+		}
+
+	}
+
+	private void setDefaultNodeView(Node node, Graph graph) {
+		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(133,207,255) ; stroke-mode: plain; "
+				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
+				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: italic ;");
+
+	}
+
+	private void setInitialNodeView(Node node, Graph graph) {
+		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(185,244,99) ; stroke-mode: plain; "
+				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
+				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: bold-italic ;");
+
+	}
+
+	private void setDefaultEdgeModel(Edge edge, Graph graph) {
+		edge.addAttribute("ui.style",
+				"fill-color: rgb(250,124,97) ; text-color: black; text-style: italic ; text-size: 12px ; size: 3px ;");
+		String[] ids = edge.getId().split("-");
+		String stimulus = ids[1].split(":")[1];
+
+		Sprite sprite = spriteManager.addSprite(edge.getId() + stimulus);
+		sprite.attachToEdge(edge.getId());
+	}
+
+	private void graphicGraphDfs(IState state, Stack<IState> stack, Graph graph, HashMap<String, Boolean> visited) {
+		visited.put(state.getId(), true);
+		Iterator<String> keys = state.getTransitions().keySet().iterator();
+		while (keys.hasNext()) {
+			ITransition transition = state.getTransitions().get(keys.next());
+			IState finalState = transition.getStateFinal();
+			if (graph != null) {
+				String keyEdge = state.getId() + "-" + finalState.getId() + ":" + transition.getstimulus();
+				graph.addEdge(keyEdge, state.getId(), finalState.getId());
+				setDefaultEdgeModel(graph.getEdge(keyEdge), graph);
+			}
+			if (!visited.containsKey(finalState.getId())) {
+				stack.push(transition.getStateFinal());
+			}
+		}
+	}
+
 	public Graph getEquivalentGraphicGraph() {
-		return convertToGraph(equivalent);
-		
+		return parseGraph(equivalent);
+
 	}
 
 	public void generateEquivalent() {
 		// TODO Auto-generated method stub
+
+	}
+
+	public boolean canSerializeMachine() {
+		if (automaton != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public void serializeMachine(String path) {
+		try {
+			FileWriter writer = new FileWriter(new File(path));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void load(String path) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public HashMap<String, String> getDataMachine() {
+
+		return getData(automaton);
+	}
+
+	private HashMap<String, String> getData(IAutomata automaton) {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("name", automaton.getId());
+		if(automaton instanceof Mealy) {
+			map.put("type","MEALY");
+			map.put("column-count", ""+(1+ (automaton.getLanguage().getAlphabet().length*2)));
+		}else {
+			map.put("type","MOORE");
+			map.put("column-count", ""+2+(automaton.getLanguage().getAlphabet().length));
+		}
+		map.put("states-count", automaton.getStates().size() + "");
+		map.put("alphabet-count", automaton.getLanguage().getAlphabet().length + "");
+		map.put("alphabet", automaton.getLanguage().toString());
 		
+		createColumns(map, automaton,automaton.getLanguage().getAlphabet());
+
+		return map;
+	}
+
+	private void createColumns(HashMap<String, String> map, IAutomata automaton, char[] alphabet) {
+		int column =0;
+		if(automaton instanceof Mealy) {
+			
+		}
+		else {
+			
+		}
+		
+
+	}
+
+	public HashMap<String, String> getDataEquivalent() {
+		return getData(equivalent);
 	}
 
 }

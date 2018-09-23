@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -27,6 +28,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
+
+import com.graphicManagers.ViewDialog;
 
 import manager.AutomataManager;
 
@@ -62,18 +65,18 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	private JButton btnGenerateEquivalent;
 	private AutomataViewer viewer;
 	private String typeView;
+	private ViewDialog viewDialog;
 
 	public AutomatonView(String type, AutomataViewer viewer) {
 		machineType = AutomataManager.MEALY;
 		this.viewer = viewer;
 		this.typeView = type;
 		ViewFactory.createDefaultComponentPane(this);
-//		if (type.equals(MACHINE)) {
-		createMachineStateView();
-//		}
-//		} else {
-//		createAutomatonView();
-//		}
+		if (type.equals(MACHINE)) {
+			createMachineStateView();
+		} else {
+			createAutomatonView();
+		}
 
 	}
 
@@ -177,29 +180,30 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		btnViewGraphic.setActionCommand(VIEW_GRAPHIC);
 		btnViewGraphic.addActionListener(this);
 
-		btnAddState = new JButton("añadir estado");
+		btnAddState = new JButton("Añadir estado");
 		btnAddState.setActionCommand(ADD_STATE);
 		btnAddState.addActionListener(this);
+
 		GridBagConstraints gbc_btnAddState = new GridBagConstraints();
 		gbc_btnAddState.insets = new Insets(0, 0, 0, 5);
 		gbc_btnAddState.gridx = 2;
 		gbc_btnAddState.gridy = 10;
 		add(btnAddState, gbc_btnAddState);
+
 		GridBagConstraints gbc_btnViewGraphic = new GridBagConstraints();
 		gbc_btnViewGraphic.insets = new Insets(0, 0, 0, 5);
 		gbc_btnViewGraphic.gridx = 4;
 		gbc_btnViewGraphic.gridy = 10;
 		add(btnViewGraphic, gbc_btnViewGraphic);
-		
-		btnGenerateEquivalent = new JButton("Generar equivalente");
+
+		btnGenerateEquivalent = new JButton("Equivalente");
 		GridBagConstraints gbc_generateEquivalent = new GridBagConstraints();
-		gbc_generateEquivalent.fill = GridBagConstraints.HORIZONTAL;
-		gbc_generateEquivalent.gridwidth = 6;
+//		gbc_generateEquivalent.gridwidth = 6;
 		gbc_generateEquivalent.insets = new Insets(0, 0, 0, 5);
-		gbc_generateEquivalent.gridx = 4;
-		gbc_generateEquivalent.gridy = 10;
+		gbc_generateEquivalent.gridx = 3;
+		gbc_generateEquivalent.gridy = 11;
 		add(btnGenerateEquivalent, gbc_generateEquivalent);
-		
+
 		btnGenerateEquivalent.setActionCommand(GENERATE);
 		btnGenerateEquivalent.addActionListener(this);
 		btnGenerateEquivalent.setEnabled(false);
@@ -231,10 +235,10 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 								if (!model.validateData(row, column)) {
 									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
 									setValueAt("", row, column);
+								}else {
+									addRowToAutomata(row);
 								}
-							} else if (column == getColumnCount() - 1) {
-								addRowToAutomata(row);
-							} else if (column == 0) {
+							}  else if (column == 0) {
 								addRowToAutomata(row);
 								model.setEditable(row, column, false);
 							}
@@ -423,6 +427,20 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 	}
 
+	public void showGraphOnDialog(ViewDialog auxDialog) {
+		if (viewDialog != null) {
+			viewDialog.dispose();
+
+		}
+		if (auxDialog != null) {
+			viewDialog = auxDialog;
+			viewDialog.setAlwaysOnTop(false);
+
+			viewDialog.showOnCenter();
+		}
+
+	}
+
 	private ItemListener createCheckBoxListener() {
 		ItemListener listener = new ItemListener() {
 
@@ -482,7 +500,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		} else if (e.getActionCommand().equals(TYPED_NAME)) {
 			// TODO
 			viewer.setAutomatonName(textField.getText());
-		}else if(e.getActionCommand().equals(GENERATE)) {
+		} else if (e.getActionCommand().equals(GENERATE)) {
 			viewer.generateEquivalent();
 		}
 

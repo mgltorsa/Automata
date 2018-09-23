@@ -13,19 +13,15 @@ import com.view.AutomataViewer;
 public class MouseActions extends DefaultMouseManager {
 	protected Point initPoint;
 	protected Point lastPoint;
-	protected Camera camera;
-	private boolean selectMode;
-	private String init;
-	private String last;
+	protected Camera camera;	
 	private AutomataViewer main;
 
 	@Override
 	public void init(GraphicGraph graph, View view) {
 		// TODO Auto-generated method stub
 		super.init(graph, view);
-
+		
 		camera = view.getCamera();
-		selectMode = false;
 	}
 
 	public void mousePressed(MouseEvent event) {
@@ -41,7 +37,6 @@ public class MouseActions extends DefaultMouseManager {
 		if (curElement != null) {
 			elementMoving(curElement, event);
 		} else {
-			// view.selectionGrowsAt(event.getX(), event.getY());
 			if (initPoint == null) {
 				initPoint = event.getPoint();
 			} else {
@@ -60,7 +55,6 @@ public class MouseActions extends DefaultMouseManager {
 				if (lastPoint.x > initPoint.x) {
 					moveToLeft();
 				}
-				// }
 				initPoint = null;
 				lastPoint = null;
 			}
@@ -125,10 +119,5 @@ public class MouseActions extends DefaultMouseManager {
 		this.main = main;
 	}
 
-	public void setSelectedMode(boolean selected) {
-		this.selectMode = selected;
-		init = null;
-		last = null;
-	}
-
+	
 }
