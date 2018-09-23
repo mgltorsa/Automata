@@ -2,6 +2,7 @@ package com.view;
 
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
+import java.awt.Window.Type;
 import java.util.HashMap;
 
 import javax.swing.JDialog;
@@ -77,14 +78,14 @@ public class AutomataViewer extends JPanel {
 	}
 
 	public void showGraphicOnDialog(String typeView) {
-		Graph graph =null;
+		Graph graph = null;
 		if (typeView.equals(AutomatonView.MACHINE)) {
 			graph = main.getAutomataManager().getMachineGraphicGraph();
-			showGraphicGraph(graph,machine);
+			showGraphicGraph(graph, machine);
 
 		} else {
-			graph=main.getAutomataManager().getEquivalentGraphicGraph();
-			showGraphicGraph(graph,equivalent);
+			graph = main.getAutomataManager().getEquivalentGraphicGraph();
+			showGraphicGraph(graph, equivalent);
 		}
 
 	}
@@ -102,9 +103,8 @@ public class AutomataViewer extends JPanel {
 
 		auxDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-		
 		view.showGraphOnDialog(auxDialog);
-		
+
 	}
 
 	public void setAutomatonName(String text) {
@@ -120,16 +120,21 @@ public class AutomataViewer extends JPanel {
 	}
 
 	public void closeGraphDialog() {
-		
+
 	}
 
-	public void loadMachine() {	
+	public void loadMachine() {
 		load(AutomatonView.MACHINE);
 	}
-	
-	private void load(String tyoe) {
-		HashMap<String,String> info = main.getAutomataManager().getDataMachine();		
-		
+
+	private void load(String type) {
+		HashMap<String, String> info = null;
+		if (type.equals(AutomatonView.MACHINE)) {
+			info = main.getAutomataManager().getDataMachine();
+		}else {
+			info=main.getAutomataManager().getDataEquivalent();
+		}
+
 	}
 
 	public void loadEquivalent() {

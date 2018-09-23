@@ -44,7 +44,7 @@ public class AutomataManager {
 	}
 
 	public boolean validateLanguage(String character) {
-		return automaton.getLanguage().contains(character);
+		return automaton.getLanguage().toString().contains(character);
 	}
 
 	public boolean existState(String id) {
@@ -282,39 +282,29 @@ public class AutomataManager {
 		map.put("name", automaton.getId());
 		if(automaton instanceof Mealy) {
 			map.put("type","MEALY");
+			map.put("column-count", ""+(1+ (automaton.getLanguage().getAlphabet().length*2)));
 		}else {
 			map.put("type","MOORE");
+			map.put("column-count", ""+2+(automaton.getLanguage().getAlphabet().length));
 		}
 		map.put("states-count", automaton.getStates().size() + "");
-		map.put("alphabet-count", automaton.getLanguage().split(",").length + "");
-		map.put("alphabet", automaton.getLanguage());
-
-		createRows(map, automaton);
+		map.put("alphabet-count", automaton.getLanguage().getAlphabet().length + "");
+		map.put("alphabet", automaton.getLanguage().toString());
+		
+		createColumns(map, automaton,automaton.getLanguage().getAlphabet());
 
 		return map;
 	}
 
-	private void createRows(HashMap<String, String> map, IAutomata automaton) {
-
-		int i = 0;
-		Stack<IState> stack = new Stack();
-		stack.push(automaton.getInitState());
-		while (!stack.isEmpty()) {
-			String row = "";
-			IState state = stack.pop();
-			ITransition[] values = new ITransition[state.getTransitions().values().size()];
-			values = state.getTransitions().values().toArray(values);
-			row += state.getId() + ",";
-			for (int j = 0; j < values.length - 1; j++) {
-
-				ITransition transition = values[j];
-				row += transition.getstimulus() + "," + transition.getStateFinal().getId()+",";
-			}
-			row += values[values.length - 1].getstimulus() + "," + values[values.length - 1].getStateFinal().getId();
-
-			map.put(i + "", row);
-			i++;
+	private void createColumns(HashMap<String, String> map, IAutomata automaton, char[] alphabet) {
+		int column =0;
+		if(automaton instanceof Mealy) {
+			
 		}
+		else {
+			
+		}
+		
 
 	}
 
