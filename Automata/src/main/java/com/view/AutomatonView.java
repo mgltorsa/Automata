@@ -28,6 +28,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
+import manager.AutomataManager;
+
 import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
@@ -37,12 +39,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class AutomatonView extends JPanel implements ActionListener {
+public class AutomatonView extends JPanel implements ActionListener, ItemListener {
 
 	public final static String MACHINE = "M";
 	public final static String AUTOMATON = "A";
-	public final static String MEALY = "MEALY";
-	public final static String MOORE = "MOORE";
 
 	private static final String ALPHABET_REMOVE = "removeCharacter";
 	private static final String STATE_REMOVE = "removeState";
@@ -60,7 +60,7 @@ public class AutomatonView extends JPanel implements ActionListener {
 	private AutomataViewer viewer;
 
 	public AutomatonView(String type, AutomataViewer viewer) {
-		machineType = MEALY;
+		machineType = AutomataManager.MEALY;
 		this.viewer = viewer;
 		ViewFactory.createDefaultComponentPane(this);
 		if (type.equals(MACHINE)) {
@@ -127,8 +127,8 @@ public class AutomatonView extends JPanel implements ActionListener {
 		gbc_rdbtnMealy.gridy = 4;
 		add(rdbtnMealy, gbc_rdbtnMealy);
 		radioGroup.add(rdbtnMealy);
-		rdbtnMealy.setActionCommand(MEALY);
-		rdbtnMealy.addItemListener(createRadioButtonListener());
+		rdbtnMealy.setActionCommand(AutomataManager.MEALY);
+		rdbtnMealy.addItemListener(this);
 		rdbtnMealy.setSelected(true);
 
 		JRadioButton rdbtnMoore = new JRadioButton("Moore");
@@ -138,8 +138,8 @@ public class AutomatonView extends JPanel implements ActionListener {
 		gbc_rdbtnMoore.gridy = 4;
 		add(rdbtnMoore, gbc_rdbtnMoore);
 		radioGroup.add(rdbtnMoore);
-		rdbtnMoore.setActionCommand(MOORE);
-		rdbtnMoore.addItemListener(createRadioButtonListener());
+		rdbtnMoore.setActionCommand(AutomataManager.MOORE);
+		rdbtnMoore.addItemListener(this);
 
 		JLabel lblTablaDeEstados = new JLabel("Tabla de estados");
 		GridBagConstraints gbc_lblTablaDeEstados = new GridBagConstraints();
@@ -203,18 +203,24 @@ public class AutomatonView extends JPanel implements ActionListener {
 					int column = e.getColumn();
 					int row = e.getFirstRow();
 					if (model != null) {
-						if (row >= 0 && column >= 1) {
-							if (!model.validateData(row, column)) {
-								ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
-								setValueAt("", row, column);
+						if (row >= 0) {
+							if (column >= 1) {
+								if (!model.validateData(row, column)) {
+									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
+									setValueAt("", row, column);
+								}								
+							} else if (column == getColumnCount() - 1) {
+								addRowToAutomata(row);
+							} else if (column == 0) {								
+								addRowToAutomata(row);
 							}
 						}
+
 					}
 
 				}
 			}
 		};
-
 		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		ViewFactory.createDefaultComponentPane(table);
 		table.setForeground(Color.BLACK);
@@ -258,22 +264,6 @@ public class AutomatonView extends JPanel implements ActionListener {
 		return menu;
 	}
 
-	private ItemListener createRadioButtonListener() {
-		ItemListener listener = new ItemListener() {
-
-			public void itemStateChanged(ItemEvent e) {
-				JRadioButton radio = (JRadioButton) e.getSource();
-				String command = radio.getActionCommand();
-				if (command.equals(MEALY)) {
-					setMealyModel();
-				} else {
-					setMooreModel();
-				}
-			}
-		};
-		return listener;
-	}
-
 	private void revalidateTable() {
 		calculateModel();
 	}
@@ -290,7 +280,7 @@ public class AutomatonView extends JPanel implements ActionListener {
 
 		if (machineType != null) {
 
-			if (machineType == MEALY) {
+			if (machineType == AutomataManager.MEALY) {
 				setMealyModel();
 			} else {
 				setMooreModel();
@@ -300,7 +290,7 @@ public class AutomatonView extends JPanel implements ActionListener {
 	}
 
 	public void setMealyModel() {
-		machineType = MEALY;
+		machineType = AutomataManager.MEALY;
 		changeTableModel();
 		viewer.createMachine(machineType);
 
@@ -324,7 +314,7 @@ public class AutomatonView extends JPanel implements ActionListener {
 	}
 
 	public void setMooreModel() {
-		machineType = MOORE;
+		machineType = AutomataManager.MOORE;
 		changeTableModel();
 		viewer.createMachine(machineType);
 
@@ -338,13 +328,13 @@ public class AutomatonView extends JPanel implements ActionListener {
 		} else {
 			int alphabetLength = comboBox.getItemCount();
 			if (alphabetLength > 0) {
-				if (machineType == MEALY) {
+				if (machineType == AutomataManager.MEALY) {
 					ArrayList<String> columns = new ArrayList<String>();
 					columns.add("Estado");
 					for (int i = 0; i < alphabetLength; i++) {
 						char c = comboBox.getItemAt(i);
 						columns.add(c + "");
-						columns.add(c + ":out");
+						columns.add(c + "-out");
 					}
 					columnNames = new String[columns.size()];
 					columns.toArray(columnNames);
@@ -357,20 +347,20 @@ public class AutomatonView extends JPanel implements ActionListener {
 					}
 				}
 			}
-
 		}
+		setLanguageToAutomata();
 
 		return columnNames;
 	}
 
 	private String[] getBinaryAlphabet() {
 		String[] columnNames = null;
-		if (machineType == MEALY) {
+		if (machineType == AutomataManager.MEALY) {
 			columnNames = new String[5];
 			columnNames[1] = "0";
-			columnNames[2] = "0:out";
+			columnNames[2] = "0-out";
 			columnNames[3] = "1";
-			columnNames[4] = "1:out";
+			columnNames[4] = "1-out";
 		} else {
 			columnNames = new String[4];
 			columnNames[1] = "0";
@@ -391,6 +381,23 @@ public class AutomatonView extends JPanel implements ActionListener {
 
 	private void setBinaryLanguage() {
 		setFunctionalAlphabet(false);
+	}
+
+	public void addRowToAutomata(int row) {
+		String[] data = new String[model.getColumnCount()];
+		String message = "";
+		for (int i = 0; i < data.length; i++) {
+			String value = (String) (model.getValueAt(row, i)==null ? "":model.getValueAt(row, i));
+			data[i] = model.getColumnName(i) + ":" + value;
+		}
+		if (data[0].trim().isEmpty()) {
+			message = "No se agrego estado, debe agregar el nombre al estado para poder agregarlo";
+		} else {
+			viewer.addToAutomata(data);
+		}
+
+		ViewFactory.showPopupMessage(table, message);
+
 	}
 
 	private ItemListener createCheckBoxListener() {
@@ -421,7 +428,6 @@ public class AutomatonView extends JPanel implements ActionListener {
 						comboBox.addItem(text.charAt(0));
 						revalidateTable();
 						ViewFactory.showPopupMessage(comboBox, "¡Caracter agregado!");
-
 					}
 
 				}
@@ -446,6 +452,22 @@ public class AutomatonView extends JPanel implements ActionListener {
 		} else if (e.getActionCommand().equals(ADD_STATE)) {
 			model.addEmptyRow();
 		}
+
+	}
+
+	public void setLanguageToAutomata() {
+		String[] language = null;
+		if (chxBinary != null && chxBinary.isSelected()) {
+			language = new String[2];
+			language[0] = "1";
+			language[1] = "2";
+		} else if (comboBox.getItemCount() > 0) {
+			language = new String[comboBox.getItemCount()];
+			for (int i = 0; i < language.length; i++) {
+				language[i] = comboBox.getItemAt(i) + "";
+			}
+		}
+		viewer.setLanguageToAutomata(language);
 
 	}
 
@@ -527,9 +549,18 @@ public class AutomatonView extends JPanel implements ActionListener {
 			for (int i = 0; i < columnIdentifiers.size(); i++) {
 				removeColumn(i);
 			}
-
 		}
 
+	}
+
+	public void itemStateChanged(ItemEvent e) {
+		JRadioButton radio = (JRadioButton) e.getSource();
+		String command = radio.getActionCommand();
+		if (command.equals(AutomataManager.MEALY)) {
+			setMealyModel();
+		} else {
+			setMooreModel();
+		}
 	}
 
 }

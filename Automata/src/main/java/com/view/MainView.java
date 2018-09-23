@@ -12,9 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 
-import com.automata.IAutomata;
-import com.statesMachine.Mealy;
-import com.statesMachine.Moore;
+import manager.AutomataManager;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
@@ -25,11 +23,12 @@ public class MainView extends JFrame implements ActionListener {
 	public final String ABOUT = "Acerca";
 
 	private AutomataViewer viewer;
-	private IAutomata automata;
+	private AutomataManager automataManager;
 	private static MainView mainView;
 
 	private MainView() {
 		setResizable(true);
+		automataManager= new AutomataManager();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setMinimumSize(new Dimension(960, 650));
 		setPreferredSize(new Dimension(960, 650));
@@ -110,20 +109,10 @@ public class MainView extends JFrame implements ActionListener {
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
 	
-	public void createMachine(String type) {
-		if(type.equals(AutomatonView.MEALY)) {
-			automata=new Mealy();
-		}else if(type.equals(AutomatonView.MOORE)){
-			automata=new Moore();
-		}
+	public AutomataManager getAutomataManager() {
+		return automataManager;
 	}
 	
-	
-
-	public IAutomata getMachine() {
-		return automata;
-		
-	}
 
 
 

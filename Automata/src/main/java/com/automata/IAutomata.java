@@ -26,5 +26,6 @@ public interface IAutomata {
 	public HashMap<String,IState> getStates();
 	public IAutomata getEquivalent();
 	public void removeState(String id);
+	public void addState(IState state);
 	
 }

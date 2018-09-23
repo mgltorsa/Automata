@@ -37,9 +37,12 @@ public class Automata implements IAutomata{
 		return id;
 	}
 	public void addState(String id) {
-		
+		states.put(id, new State(id));
 	}	
-
+	
+	public void addState(IState state) {
+		states.put(state.getId(), state);
+	}
 	
 	public IState getState(String name) {
 		return states.get(name);
