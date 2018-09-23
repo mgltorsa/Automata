@@ -29,8 +29,8 @@ public class MainView extends JFrame implements ActionListener {
 		setResizable(true);
 		automataManager = new AutomataManager();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setMinimumSize(new Dimension(960, 650));
-		setPreferredSize(new Dimension(960, 650));
+		setMinimumSize(new Dimension(960, 700));
+		setPreferredSize(new Dimension(960, 700));
 		ViewFactory.createDefaultFrame(this);
 		createMenuBar();
 		pack();
@@ -111,7 +111,6 @@ public class MainView extends JFrame implements ActionListener {
 			try {
 				automataManager.load(path);
 				viewer.loadMachine();
-
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Error al cargar el archivo", "Fail load", JOptionPane.INFORMATION_MESSAGE);
 				e.printStackTrace();

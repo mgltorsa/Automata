@@ -236,7 +236,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 						if (row >= 0) {
 							if (column >= 1) {
 								if (!model.validateData(row, column)) {
-//									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
+									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
 									model.setValueAt("", row, column);
 								} else {
 									addRowToAutomata(row);
@@ -244,8 +244,15 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 								}
 							} else if (column == 0) {
-								addRowToAutomata(row);
-								model.setEditable(row, column, false);
+
+								if (!model.validateData(row, column)) {
+									System.out.println(model.getValueAt(row, column));
+									addRowToAutomata(row);
+									model.setEditable(row, column, false);
+								}else {
+									model.setValueAt("", row, column);
+									ViewFactory.showPopupMessage(table, "Ingrese un estado no existente");
+								}
 							}
 						}
 					}
@@ -300,9 +307,9 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		calculateModel();
 	}
 
-	public boolean validateData(String data, String state,int type) {
+	public boolean validateData(String data, String state, int type) {
 		if (type == AutomatonTableModel.OUTPUT) {
-			return viewer.validateLanguage(state,data);
+			return viewer.validateLanguage(state, data);
 		} else {
 			return viewer.validateState(state);
 		}
@@ -494,12 +501,12 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			}
 		} else if (e.getActionCommand().equals(STATE_REMOVE)) {
 			removeStates();
-
 		} else if (e.getActionCommand().equals(ADD_STATE)) {
 			model.addEmptyRow();
 			btnGenerateEquivalent.setEnabled(true);
 			btnGenerateEquivalent.setVisible(true);
 		} else if (e.getActionCommand().equals(VIEW_GRAPHIC)) {
+			// TODO
 			viewer.showGraphicOnDialog(this.typeView);
 		} else if (e.getActionCommand().equals(TYPED_NAME)) {
 			String text = textField.getText();
@@ -638,9 +645,9 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				String data = (String) getValueAt(row, column);
 				if (data != null && !data.isEmpty()) {
 					if (getColumnName(column).contains("out")) {
-						return view.validateData(data, (String)getValueAt(row,0),OUTPUT);
+						return view.validateData(data, (String) getValueAt(row, 0), OUTPUT);
 					} else {
-						return view.validateData(null,data, STATE);
+						return view.validateData(null, data, STATE);
 					}
 				}
 				if (data == null) {

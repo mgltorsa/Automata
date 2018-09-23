@@ -16,6 +16,10 @@ import com.graphicManagers.ViewDialog;
 
 import manager.AutomataManager;
 
+/**
+ * @author Miguel
+ *
+ */
 @SuppressWarnings("serial")
 public class AutomataViewer extends JPanel {
 
@@ -23,6 +27,7 @@ public class AutomataViewer extends JPanel {
 	private AutomatonView equivalent;
 	private JSplitPane split;
 	private MainView main;
+
 
 	public AutomataViewer(MainView main) {
 		this.main = main;
