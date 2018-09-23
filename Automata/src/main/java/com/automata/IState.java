@@ -3,13 +3,14 @@
  */
 package com.automata;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * @author Miguel
  *
  */
-public interface IState {
+public interface IState extends Serializable {
 
 	/**change the id of the state
 	 * 

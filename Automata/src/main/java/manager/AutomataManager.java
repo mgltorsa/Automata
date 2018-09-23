@@ -34,7 +34,7 @@ public class AutomataManager {
 	}
 
 	public boolean validateLanguage(String character) {
-		return automaton.getLanguage().contains(character);
+		return automaton.getLanguage().toString().contains(character);
 	}
 
 	public boolean existState(String id) {
