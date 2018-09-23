@@ -3,13 +3,14 @@
  */
 package com.automata;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * @author Miguel
  *
  */
-public interface IAutomata {
+public interface IAutomata extends Serializable {
 
 	/**change id of the Automata
 	 * 
