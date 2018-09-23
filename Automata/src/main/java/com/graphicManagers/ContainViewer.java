@@ -60,11 +60,6 @@ public class ContainViewer extends Viewer {
 		return view;
 	}
 
-	public void setSelectedMode(boolean selected) {
-		if (view != null) {
-			view.setSelectedMode(selected);
-		}
-	}
 
 	public void setMain(AutomataViewer main) {
 		if (view != null) {

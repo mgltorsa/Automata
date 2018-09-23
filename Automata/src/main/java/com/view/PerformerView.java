@@ -1,6 +1,7 @@
 package com.view;
 
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -16,7 +17,8 @@ public class PerformerView extends JFrame implements ActionListener{
 	public final static String LOAD="Cargar archivo";
 	public final static String ABOUT="Sobre el programa (instrucciones y demas)";
 	public final static Font DEFAULT_FONT = new Font("Serif", Font.CENTER_BASELINE, 12);
-
+	public final static JFileChooser fileChooser = new JFileChooser();
+	
 	private JPanel contentPane;
 	private static PerformerView performerView;
 	
@@ -26,7 +28,7 @@ public class PerformerView extends JFrame implements ActionListener{
 //			JDialog.setDefaultLookAndFeelDecorated(true);
 			PerformerView frame = PerformerView.getInstance();
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			
+			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");			
 			SwingUtilities.updateComponentTreeUI(frame);
 			frame.setVisible(true);
 			
@@ -125,6 +127,26 @@ public class PerformerView extends JFrame implements ActionListener{
 	private void showCreateMachine() {
 		MainView.getInstance().setVisible(true);
 		this.setExtendedState(ICONIFIED);
+	}
+
+	public String showSaveDialog() {
+		String path=null;
+		int option = fileChooser.showSaveDialog(null);
+		if(option == JFileChooser.APPROVE_OPTION) {
+			path = fileChooser.getSelectedFile().getPath();
+		}
+		
+		return path;
+		
+	}
+
+	public String showLoadDialog() {
+		String path =null;
+		int option = fileChooser.showOpenDialog(null);
+		if(option==JFileChooser.APPROVE_OPTION) {
+			path = fileChooser.getSelectedFile().getPath();
+		}
+		return path;
 	}
 
 	

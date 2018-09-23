@@ -224,7 +224,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			break;
 		case EXIT:
 			if (main != null) {
-//				main.closeGraphDialog();
+				main.closeGraphDialog();
 			}
 		}
 
@@ -386,12 +386,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 
 		if (shortcuts != null) {
 			((KeyAction) shortcuts).setMain(main);
-		}
-	}
-
-	public void setSelectedMode(boolean selected) {
-		if (mouseClicks != null) {
-			((MouseActions) mouseClicks).setSelectedMode(selected);
 		}
 	}
 
