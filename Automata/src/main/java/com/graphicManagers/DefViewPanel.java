@@ -24,15 +24,13 @@ import org.graphstream.ui.view.util.MouseManager;
 import org.graphstream.ui.view.util.ShortcutManager;
 
 import com.view.AutomataViewer;
-import com.view.ViewDialog;
 
+@SuppressWarnings("serial")
 public class DefViewPanel extends ViewPanel implements WindowListener, ComponentListener {
 
 	public DefViewPanel(String identifier) {
 		super(identifier);
 	}
-
-
 	/**
 	 * Parent viewer.
 	 */
@@ -99,9 +97,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		});
 
 	}
-	// Access
-
-	// Command
 
 	public Camera getCamera() {
 		return renderer.getCamera();
@@ -158,12 +153,12 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 	public void openInAFrame(boolean on) {
 		if (on) {
 			if (frame == null) {
-				frame = new ViewDialog("Routing");
+				frame = new ViewDialog("automaton");
 				frame.setLayout(new BorderLayout());
 				frame.add(this, BorderLayout.CENTER);
 				frame.setSize(800, 600);
 				frame.setLocationRelativeTo(null);
-				// frame.setVisible(true);
+				frame.setVisible(true);
 				frame.addWindowListener(this);
 				frame.addComponentListener(this);
 				frame.addKeyListener(shortcuts);
@@ -229,7 +224,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			break;
 		case EXIT:
 			if (main != null) {
-				main.closeGraphDialog();
+//				main.closeGraphDialog();
 			}
 		}
 

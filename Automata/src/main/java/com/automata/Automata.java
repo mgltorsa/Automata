@@ -3,11 +3,7 @@
  */
 package com.automata;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-
+import java.util.*;
 
 /**
  * @author Miguel
@@ -40,10 +36,16 @@ public abstract class Automata implements IAutomata{
 		return id;
 	}
 	public void addState(String id) {
-		IState state=new State(id);
-		states.put(id, state);
+		IState state = new State(id);
+		addState(state);
 	}	
-
+	
+	public void addState(IState state) {
+		if(states.isEmpty()) {
+			initState=state;
+		}
+		states.put(state.getId(), state);
+	}
 	
 	public IState getState(String name) {
 		return states.get(name);
@@ -53,6 +55,13 @@ public abstract class Automata implements IAutomata{
 		return initState;
 	}
 	
+	public void removeState(String id) {
+		IState oldState = states.remove(id);
+		String[] transitions = new String[oldState.getTransitions().keySet().size()];
+		oldState.getTransitions().keySet().toArray(transitions);
+		Arrays.sort(transitions);
+		initState = oldState.getTransitions().get(transitions[0]).getStateFinal();
+	}
 	public HashMap<String ,ITransition> getTransitions(IState state) {
 		return state.getTransitions();
 	}

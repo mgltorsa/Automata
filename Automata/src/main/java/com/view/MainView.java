@@ -10,13 +10,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JDesktopPane;
-import javax.swing.BoxLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 
+
+import manager.AutomataManager;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
@@ -27,15 +23,21 @@ public class MainView extends JFrame implements ActionListener {
 	public final String ABOUT = "Acerca";
 
 	private AutomataViewer viewer;
+	private AutomataManager automataManager;
 	private static MainView mainView;
-	
+
 	private MainView() {
+		setResizable(true);
+		automataManager= new AutomataManager();
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setMinimumSize(new Dimension(1080, 640));
-		setPreferredSize(new Dimension(640, 480));
+		setMinimumSize(new Dimension(960, 650));
+		setPreferredSize(new Dimension(960, 650));
 		ViewFactory.createDefaultFrame(this);
 		createMenuBar();
+		pack();
 	}
+
+
 
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
@@ -65,57 +67,54 @@ public class MainView extends JFrame implements ActionListener {
 		menuBar.add(create);
 		menuBar.add(about);
 		this.setJMenuBar(menuBar);
-		getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		getContentPane().setLayout(new BorderLayout());
 		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		getContentPane().add(splitPane);
+		viewer = new AutomataViewer(this);
+//		viewer.setBounds(0, 0, 574, 458);
+		getContentPane().add(viewer,BorderLayout.CENTER);
 
 	}
-	
+
 	public static MainView getInstance() {
-		if(mainView ==null) {
-			mainView= new MainView();
+		if (mainView == null) {
+			mainView = new MainView();
 		}
 		return mainView;
+	}
+
+	@Override
+	public void setVisible(boolean b) {
+		super.setVisible(b);
+		this.setExtendedState(NORMAL);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getActionCommand().equals(CREATE_SM)) {
-			if (viewer == null) {
-				viewer = new AutomataViewer(this);
-				getContentPane().add(viewer, BorderLayout.CENTER);
-				revalidate();
-			}
-			else {
-				int option = JOptionPane.showConfirmDialog(this, "¿Desea crear uno nuevo?");
+			if(viewer!=null) {
+				int option = JOptionPane.showConfirmDialog(null, "Borrara todo lo ingresado en la maquina, ¿desea hacerlo?");
 				if(option == JOptionPane.YES_OPTION) {
-					this.remove(viewer);
-					viewer = new AutomataViewer(this);
-					getContentPane().add(viewer, BorderLayout.CENTER);
-					revalidate();
+					viewer.clear();
 				}
 			}
-		}
-		else if(e.getActionCommand().equals(ABOUT)) {
-			if(viewer!=null) {
-				viewer.test();
-			}
+		} else if (e.getActionCommand().equals(ABOUT)) {
+			
 		}
 
 	}
-	
-	
+
 	@Override
-	public void dispose() {	
+	public void dispose() {
 		super.dispose();
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
-
-	public static void main(String[] args) {
-		MainView main = new MainView();
-		main.setVisible(true);
+	
+	public AutomataManager getAutomataManager() {
+		return automataManager;
 	}
+	
 
+
+
+	
 }

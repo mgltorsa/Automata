@@ -1,4 +1,4 @@
-package com.view;
+package com.graphicManagers;
 
 import java.util.Iterator;
 
@@ -11,8 +11,8 @@ import org.graphstream.ui.j2dviewer.J2DGraphRenderer;
 import org.graphstream.ui.swingViewer.GraphRenderer;
 import org.graphstream.ui.view.Viewer;
 
-import com.graphicManagers.DefViewPanel;
-import com.view.ContainView;
+import com.graphicManagers.ContainView;
+import com.view.AutomataViewer;
 
 public class ContainViewer extends Viewer {
 

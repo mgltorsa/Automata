@@ -1,4 +1,4 @@
-package com.view;
+package com.graphicManagers;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -12,14 +12,12 @@ import javax.swing.border.EmptyBorder;
 
 
 
-
-
 @SuppressWarnings("serial")
 public class ViewDialog extends JDialog {
 
 	private JPanel contentPanel;
 
-	public ViewDialog(String title) {
+	public ViewDialog(String title) { 
 		contentPanel = new JPanel();
 		setTitle(title);
 		setBounds(100, 100, 450, 300);

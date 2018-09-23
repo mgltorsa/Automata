@@ -10,7 +10,7 @@ import com.automata.Transition;
  * @author Miguel
  *
  */
-public class MealyTransition extends Transition implements IMealyTransition{
+public class MealyTransition extends Transition {
 	private String response;
 	
 	public MealyTransition(String stimulus,String response, IState fin) {

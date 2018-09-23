@@ -1,69 +1,87 @@
 package com.view;
 
-
-import javax.swing.JDialog;
+import java.awt.Dimension;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.view.Viewer;
-
-import com.graphicManagers.DefViewPanel;
-
-
-
+import manager.AutomataManager;
 
 @SuppressWarnings("serial")
-public class AutomataViewer extends JSplitPane {
-	
+public class AutomataViewer extends JPanel {
 
-	private ViewDialog viewDialog;
+	private AutomatonView machine;
+	private AutomatonView equivalent;
+	private JSplitPane split;
 	private MainView main;
-	private AutomatonView stateMachine;
-	private AutomatonView automaton;
-	
+
 	public AutomataViewer(MainView main) {
-		super(JSplitPane.VERTICAL_SPLIT);
-		this.main=main;
-		stateMachine = new AutomatonView("Maquina de estado");
-		automaton = new AutomatonView("Automata");
-		stateMachine.setStateMachineView();
-		stateMachine.setRoot(this);
-		this.setLeftComponent(stateMachine);
-		this.setRightComponent(automaton);
-	}
-	
-	public void showAutomatonDialog(ContainViewer containViewer) {
-		ViewDialog auxDialog = null;		
-		DefViewPanel containView = containViewer.addDefaultView(true);
-		auxDialog = containView.getFrame();
-		auxDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-		if (viewDialog != null) {
-			viewDialog.dispose();
-		}
-		if (auxDialog != null) {
-			viewDialog = auxDialog;
-			viewDialog.setAlwaysOnTop(false);			
-			viewDialog.showOnCenter();			
-		}
-//		main.toFront();
+		this.main = main;
+		setSize(new Dimension(860, 819));
+		split = new JSplitPane();
+		ViewFactory.createDefaultComponentPane(split);
+		ViewFactory.createDefaultComponentPane(this);
+		machine = new AutomatonView(AutomatonView.MACHINE, this);
+		equivalent = new AutomatonView(AutomatonView.AUTOMATON, this);
+		split.setLeftComponent(machine);
+		// DEFAULT SIZE IS 10
+		split.setDividerSize(0);
+		split.setRightComponent(null);
+
+		add(split);
+		createMachine(AutomataManager.MEALY);
 	}
 
-	public void closeGraphDialog() {
-		if (viewDialog != null ) {
-			viewDialog.dispose();
-		}
-		
+	public void clear() {
+		machine = new AutomatonView(AutomatonView.MACHINE, this);
+		split.setLeftComponent(machine);
+		equivalent = new AutomatonView(AutomatonView.AUTOMATON, this);
+		createMachine(AutomataManager.MEALY);
 	}
 
-	public void test() {
-		Graph a = new MultiGraph("uys");
-		a.addNode("1");
-		a.addNode("2");
-		a.addEdge("a1", "1", "2");
-		ContainViewer containViewer = new ContainViewer(a, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-		containViewer.enableAutoLayout();
-		showAutomatonDialog(containViewer);
-		
+	public boolean validateLanguage(String data) {
+		return main.getAutomataManager().validateLanguage(data);
+	}
+
+	public boolean validateState(String id) {
+		return main.getAutomataManager().existState(id);
+	}
+
+	public void createMachine(String type) {
+		main.getAutomataManager().createMachine(type);
+	}
+
+	public void removeState(String id) {
+		main.getAutomataManager().removeState(id);
+	}
+
+	public void addToAutomata(String... data) {
+		main.getAutomataManager().addToAutomata(data);
+
+	}
+
+	public void setLanguageToAutomata(String... language) {
+		if (language != null && language.length > 0) {
+			main.getAutomataManager().setLanguage(language);
+		}
+	}
+
+	public void showGraphicOnDialog(String typeView) {
+		if (typeView.equals(AutomatonView.MACHINE)) {
+			main.getAutomataManager().getMachineGraphicGraph();
+		} else {
+			main.getAutomataManager().getEquivalentGraphicGraph();
+		}
+
+	}
+
+	public void setAutomatonName(String text) {
+		if (text != null && !text.isEmpty()) {
+			main.getAutomataManager().setName(text);
+		}
+
+	}
+
+	public void generateEquivalent() {
+		main.getAutomataManager().generateEquivalent();
+
 	}
 }

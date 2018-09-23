@@ -9,7 +9,7 @@ import com.automata.State;
  * @author Miguel
  *
  */
-public class MooreState extends State implements IMooreState{
+public class MooreState extends State{
 	private String response;
 
 	public MooreState(String id,String res) {
