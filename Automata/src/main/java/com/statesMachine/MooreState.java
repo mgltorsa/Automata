@@ -25,5 +25,9 @@ public class MooreState extends State{
 		response=rs;
 	}
 
-
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString()+","+response;
+	}
 }

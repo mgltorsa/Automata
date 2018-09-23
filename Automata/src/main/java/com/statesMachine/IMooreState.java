@@ -6,4 +6,5 @@ public interface IMooreState extends IState {
 
 	public String getResponse();
 	public void setResponse(String rs);
+	
 }

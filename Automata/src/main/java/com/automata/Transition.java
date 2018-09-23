@@ -1,4 +1,3 @@
-
 /**
  * 
  */
@@ -13,8 +12,8 @@ public class Transition implements ITransition {
 	private String stimulus;
 	private IState toState;
 	
-	public Transition(String s,IState fin) {
-		stimulus=s;
+	public Transition(String stimulus,IState fin) {
+		this.stimulus=stimulus;
 		toState=fin;
 	}
 	public String getstimulus() {
@@ -29,5 +28,9 @@ public class Transition implements ITransition {
 	public void setStateFinal(IState fin) {
 		toState=fin;
 	}
-	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return stimulus;
+	}
 }
