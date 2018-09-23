@@ -2,6 +2,9 @@ package manager;
 
 import java.util.HashMap;
 
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.MultiGraph;
+
 import com.automata.IAutomata;
 import com.automata.IState;
 import com.automata.ITransition;
@@ -20,6 +23,7 @@ public class AutomataManager {
 	private final static String TO_STATE = "to_state";
 
 	private IAutomata automaton;
+	private IAutomata equivalent;
 
 	public void createMachine(String type) {
 		if (type.equals(MEALY)) {
@@ -46,7 +50,6 @@ public class AutomataManager {
 			automaton.addState(data.get(STATE));
 		}
 		
-		System.out.println("add state:"+data.get(STATE));
 	}
 
 	private IState createMooreState(HashMap<String, String> data) {
@@ -76,6 +79,7 @@ public class AutomataManager {
 	}
 
 	public void removeState(String id) {
+		System.out.println("removed "+id);
 		automaton.removeState(id);
 
 	}
@@ -143,6 +147,33 @@ public class AutomataManager {
 		}
 		lang += language[language.length - 1];
 		automaton.setLanguage(lang);
+	}
+
+	public void setName(String id) {
+		automaton.setId(id);
+		
+	}
+
+	public Graph getMachineGraphicGraph() {
+		// TODO Auto-generated method stub
+		return convertToGraph(automaton);
+	}
+
+	private Graph convertToGraph(IAutomata automaton) {
+		Graph graph= new MultiGraph(automaton.getId());
+		automaton.getInitState();
+		
+		return graph;
+	}
+
+	public Graph getEquivalentGraphicGraph() {
+		return convertToGraph(equivalent);
+		
+	}
+
+	public void generateEquivalent() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

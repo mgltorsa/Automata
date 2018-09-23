@@ -4,6 +4,7 @@
 package com.automata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -37,10 +38,14 @@ public class Automata implements IAutomata{
 		return id;
 	}
 	public void addState(String id) {
-		states.put(id, new State(id));
+		IState state = new State(id);
+		addState(state);
 	}	
 	
 	public void addState(IState state) {
+		if(states.isEmpty()) {
+			initState=state;
+		}
 		states.put(state.getId(), state);
 	}
 	
@@ -53,7 +58,11 @@ public class Automata implements IAutomata{
 	}
 	
 	public void removeState(String id) {
-		states.remove(id);
+		IState oldState = states.remove(id);
+		String[] transitions = new String[oldState.getTransitions().keySet().size()];
+		oldState.getTransitions().keySet().toArray(transitions);
+		Arrays.sort(transitions);
+		initState = oldState.getTransitions().get(transitions[0]).getStateFinal();
 	}
 	public HashMap<String ,ITransition> getTransitions(IState state) {
 		return state.getTransitions();

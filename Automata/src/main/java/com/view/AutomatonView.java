@@ -48,6 +48,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	private static final String STATE_REMOVE = "removeState";
 	private static final String ADD_STATE = "Añadir estado";
 	private static final String VIEW_GRAPHIC = "Ver grafico";
+	private static final String TYPED_NAME = "typed Name";
+	private static final String GENERATE = "generate";
 
 	private JTextField textField;
 	private JCheckBox chxBinary;
@@ -57,17 +59,21 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	private JTable table;
 	private JButton btnViewGraphic;
 	private JButton btnAddState;
+	private JButton btnGenerateEquivalent;
 	private AutomataViewer viewer;
+	private String typeView;
 
 	public AutomatonView(String type, AutomataViewer viewer) {
 		machineType = AutomataManager.MEALY;
 		this.viewer = viewer;
+		this.typeView = type;
 		ViewFactory.createDefaultComponentPane(this);
-		if (type.equals(MACHINE)) {
-			createMachineStateView();
-		} else {
-			createAutomatonView();
-		}
+//		if (type.equals(MACHINE)) {
+		createMachineStateView();
+//		}
+//		} else {
+//		createAutomatonView();
+//		}
 
 	}
 
@@ -76,6 +82,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		setFunctionalAlphabet(false);
 		btnAddState.setEnabled(false);
 		btnAddState.setVisible(false);
+		btnGenerateEquivalent.setEnabled(false);
+		btnGenerateEquivalent.setVisible(false);
 	}
 
 	private void initializeDefaultView() {
@@ -97,6 +105,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		add(lblNombre, gbc_lblNombre);
 
 		textField = new JTextField();
+		textField.setActionCommand(TYPED_NAME);
+		textField.addActionListener(this);
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 5, 5);
 		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
@@ -180,6 +190,20 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		gbc_btnViewGraphic.gridx = 4;
 		gbc_btnViewGraphic.gridy = 10;
 		add(btnViewGraphic, gbc_btnViewGraphic);
+		
+		btnGenerateEquivalent = new JButton("Generar equivalente");
+		GridBagConstraints gbc_generateEquivalent = new GridBagConstraints();
+		gbc_generateEquivalent.fill = GridBagConstraints.HORIZONTAL;
+		gbc_generateEquivalent.gridwidth = 6;
+		gbc_generateEquivalent.insets = new Insets(0, 0, 0, 5);
+		gbc_generateEquivalent.gridx = 4;
+		gbc_generateEquivalent.gridy = 10;
+		add(btnGenerateEquivalent, gbc_generateEquivalent);
+		
+		btnGenerateEquivalent.setActionCommand(GENERATE);
+		btnGenerateEquivalent.addActionListener(this);
+		btnGenerateEquivalent.setEnabled(false);
+		btnGenerateEquivalent.setVisible(false);
 	}
 
 	private void initializeTable() {
@@ -198,8 +222,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				super.tableChanged(e);
-				if (e.getType() == TableModelEvent.DELETE || e.getType() == TableModelEvent.UPDATE
-						|| e.getType() == TableModelEvent.INSERT) {
+				if (e.getType() == TableModelEvent.UPDATE || e.getType() == TableModelEvent.INSERT) {
 					int column = e.getColumn();
 					int row = e.getFirstRow();
 					if (model != null) {
@@ -208,18 +231,18 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 								if (!model.validateData(row, column)) {
 									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
 									setValueAt("", row, column);
-								}								
+								}
 							} else if (column == getColumnCount() - 1) {
 								addRowToAutomata(row);
-							} else if (column == 0) {								
+							} else if (column == 0) {
 								addRowToAutomata(row);
+								model.setEditable(row, column, false);
 							}
 						}
-
 					}
-
 				}
 			}
+
 		};
 		table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		ViewFactory.createDefaultComponentPane(table);
@@ -387,7 +410,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		String[] data = new String[model.getColumnCount()];
 		String message = "";
 		for (int i = 0; i < data.length; i++) {
-			String value = (String) (model.getValueAt(row, i)==null ? "":model.getValueAt(row, i));
+			String value = (String) (model.getValueAt(row, i) == null ? "" : model.getValueAt(row, i));
 			data[i] = model.getColumnName(i) + ":" + value;
 		}
 		if (data[0].trim().isEmpty()) {
@@ -451,6 +474,16 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			}
 		} else if (e.getActionCommand().equals(ADD_STATE)) {
 			model.addEmptyRow();
+			btnGenerateEquivalent.setEnabled(true);
+			btnGenerateEquivalent.setVisible(true);
+		} else if (e.getActionCommand().equals(VIEW_GRAPHIC)) {
+			// TODO
+			viewer.showGraphicOnDialog(this.typeView);
+		} else if (e.getActionCommand().equals(TYPED_NAME)) {
+			// TODO
+			viewer.setAutomatonName(textField.getText());
+		}else if(e.getActionCommand().equals(GENERATE)) {
+			viewer.generateEquivalent();
 		}
 
 	}
@@ -468,7 +501,16 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			}
 		}
 		viewer.setLanguageToAutomata(language);
+	}
 
+	public void itemStateChanged(ItemEvent e) {
+		JRadioButton radio = (JRadioButton) e.getSource();
+		String command = radio.getActionCommand();
+		if (command.equals(AutomataManager.MEALY)) {
+			setMealyModel();
+		} else {
+			setMooreModel();
+		}
 	}
 
 	public class AutomatonTableModel extends DefaultTableModel {
@@ -477,10 +519,24 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		public static final int OUTPUT = 1;
 
 		private AutomatonView view;
+		private ArrayList<Boolean> editables;
 
 		public AutomatonTableModel(AutomatonView view) {
 			super();
 			this.view = view;
+			editables = new ArrayList<Boolean>();
+		}
+
+		public void setEditable(int row, int column, boolean isEditable) {
+			editables.set(row, isEditable);
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column) {
+			if (column == 0) {
+				return editables.get(row);
+			}
+			return super.isCellEditable(row, column);
 		}
 
 		public boolean validateData(int row, int column) {
@@ -498,6 +554,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 		public void addEmptyRow() {
 			this.addRow(new String[1]);
+			editables.add(true);
 		}
 
 		public void removeColumn(int column) {
@@ -517,7 +574,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 		public void removeRows(int... rows) {
 			for (int i = rows.length - 1; i >= 0; i--) {
-				removeRow(i);
+				removeRow(rows[i]);
+				editables.remove(i);
 			}
 		}
 
@@ -551,16 +609,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			}
 		}
 
-	}
-
-	public void itemStateChanged(ItemEvent e) {
-		JRadioButton radio = (JRadioButton) e.getSource();
-		String command = radio.getActionCommand();
-		if (command.equals(AutomataManager.MEALY)) {
-			setMealyModel();
-		} else {
-			setMooreModel();
-		}
 	}
 
 }

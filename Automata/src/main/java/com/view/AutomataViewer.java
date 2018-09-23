@@ -59,8 +59,29 @@ public class AutomataViewer extends JPanel {
 	}
 
 	public void setLanguageToAutomata(String... language) {
-		if (language!=null &&language.length > 0) {
+		if (language != null && language.length > 0) {
 			main.getAutomataManager().setLanguage(language);
 		}
+	}
+
+	public void showGraphicOnDialog(String typeView) {
+		if (typeView.equals(AutomatonView.MACHINE)) {
+			main.getAutomataManager().getMachineGraphicGraph();
+		} else {
+			main.getAutomataManager().getEquivalentGraphicGraph();
+		}
+
+	}
+
+	public void setAutomatonName(String text) {
+		if (text != null && !text.isEmpty()) {
+			main.getAutomataManager().setName(text);
+		}
+
+	}
+
+	public void generateEquivalent() {
+		main.getAutomataManager().generateEquivalent();
+
 	}
 }
