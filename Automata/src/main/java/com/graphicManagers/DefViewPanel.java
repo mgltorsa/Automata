@@ -223,9 +223,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 				frame.setVisible(false);
 			break;
 		case EXIT:
-			if (main != null) {
-				main.closeGraphDialog();
-			}
+			frame.dispose();
 		}
 
 	}

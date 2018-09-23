@@ -234,10 +234,12 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 						if (row >= 0) {
 							if (column >= 1) {
 								if (!model.validateData(row, column)) {
-									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
-									setValueAt("", row, column);
+//									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
+									model.setValueAt("", row, column);
 								} else {
 									addRowToAutomata(row);
+									model.setEditable(row, column, false);
+
 								}
 							} else if (column == 0) {
 								addRowToAutomata(row);
@@ -414,7 +416,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 	public void addRowToAutomata(int row) {
 		String[] data = new String[model.getColumnCount()];
-		String message = "";
+		String message = null;
 		for (int i = 0; i < data.length; i++) {
 			String value = (String) (model.getValueAt(row, i) == null ? "" : model.getValueAt(row, i));
 			data[i] = model.getColumnName(i) + ":" + value;
@@ -424,8 +426,9 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		} else {
 			viewer.addToAutomata(data);
 		}
-
-		ViewFactory.showPopupMessage(table, message);
+		if (message != null) {
+			ViewFactory.showPopupMessage(table, message);
+		}
 
 	}
 
@@ -488,10 +491,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				revalidateTable();
 			}
 		} else if (e.getActionCommand().equals(STATE_REMOVE)) {
-			int[] selectedRows = table.getSelectedRows();
-			if (selectedRows.length > 0) {
-				model.removeRows(selectedRows);
-			}
+			removeStates();
+			
 		} else if (e.getActionCommand().equals(ADD_STATE)) {
 			model.addEmptyRow();
 			btnGenerateEquivalent.setEnabled(true);
@@ -500,12 +501,28 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			// TODO
 			viewer.showGraphicOnDialog(this.typeView);
 		} else if (e.getActionCommand().equals(TYPED_NAME)) {
-			// TODO
-			viewer.setAutomatonName(textField.getText());
+			String text = textField.getText();
+			if (text != null) {
+				viewer.setAutomatonName(text);
+			}
 		} else if (e.getActionCommand().equals(GENERATE)) {
 			viewer.generateEquivalent();
 		}
 
+	}
+
+	private void removeStates() {
+		int[] selectedRows = table.getSelectedRows();
+		if (selectedRows.length > 0) {
+			model.removeRows(selectedRows);
+			for (int i = 0; i < selectedRows.length; i++) {
+				String id = (String) model.getValueAt(i, 0);
+				viewer.removeState(id);
+
+			}
+		}
+		
+		
 	}
 
 	public void setLanguageToAutomata() {
@@ -528,8 +545,10 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		String command = radio.getActionCommand();
 		if (command.equals(AutomataManager.MEALY)) {
 			setMealyModel();
+			viewer.createMachine(machineType);
 		} else {
 			setMooreModel();
+			viewer.createMachine(machineType);
 		}
 	}
 
@@ -539,26 +558,28 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		public static final int OUTPUT = 1;
 
 		private AutomatonView view;
-		private ArrayList<Boolean> editables;
+		private HashMap<String, Boolean> editables;
 		boolean validate;
 
 		public AutomatonTableModel(AutomatonView view) {
 			super();
 			this.view = view;
-			editables = new ArrayList<Boolean>();
+			editables = new HashMap<String, Boolean>();
 			validate = true;
 		}
 
 		public void setEditable(int row, int column, boolean isEditable) {
-			editables.set(row, isEditable);
+			editables.put(row + "," + column, isEditable);
+
 		}
 
 		@Override
 		public boolean isCellEditable(int row, int column) {
-			if (column == 0) {
-				return editables.get(row);
+			if (!editables.containsKey(row + "," + column)) {
+				return true;
+			} else {
+				return editables.get(row + "," + column);
 			}
-			return super.isCellEditable(row, column);
 		}
 
 		public boolean validateData(int row, int column) {
@@ -571,14 +592,31 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 						return view.validateData(data, STATE);
 					}
 				}
+				if (data == null) {
+					return false;
+
+				}
+				if (data.isEmpty()) {
+					return false;
+				}
 			}
 
-			return true;
+			return false;
+		}
+
+		@Override
+		public void setValueAt(Object aValue, int row, int column) {
+			Vector rowVector = (Vector) dataVector.elementAt(row);
+			rowVector.setElementAt(aValue, column);
+			String value = (String) aValue;
+			if (!value.isEmpty()) {
+				fireTableCellUpdated(row, column);
+			}
 		}
 
 		public void addEmptyRow() {
 			this.addRow(new String[1]);
-			editables.add(true);
+
 		}
 
 		public void removeColumn(int column) {
@@ -599,7 +637,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		public void removeRows(int... rows) {
 			for (int i = rows.length - 1; i >= 0; i--) {
 				removeRow(rows[i]);
-				editables.remove(i);
 			}
 		}
 
@@ -616,6 +653,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				for (int j = 0; j < getRowCount(); j++) {
 					if (getValueAt(j, i) != null && getValueAt(j, i).equals(data)) {
 						setValueAt("", j, i);
+						editables.put(j+","+i,true);
 					}
 				}
 			}
@@ -650,7 +688,29 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			while (info.containsKey(row + "")) {
 				String[] rowData = info.get(row).split(",");
 				String[] data = new String[rowData.length];
-				if(rowData.length>=5) {
+				data[0] = rowData[0];
+				if (view.machineType.equals(AutomataManager.MEALY)) {
+					for (int i = 1; i < rowData.length;) {
+						String stimulus = rowData[i++];
+						int columnStimulus = getColumnIndex(stimulus);
+						String idFinal = rowData[i++];
+						String out = rowData[i++];
+						int columnOut = getColumnIndex(out);
+						String response = rowData[i++];
+						data[columnStimulus] = idFinal;
+						data[columnOut] = response;
+					}
+
+				} else {
+					for (int i = 1; i < rowData.length-1;) {
+						String stimulus = rowData[i++];
+						String idFinal = rowData[i++];
+						int column = getColumnIndex(stimulus);
+						data[column]=idFinal;
+					}
+					String response = rowData[rowData.length-1];
+					data[rowData.length-1]=response;
+
 				}
 				row++;
 			}
@@ -673,7 +733,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		setFunctionalAlphabet(true);
 		comboBox.removeAllItems();
 		for (int i = 0; i < alphabet.length; i++) {
-			comboBox.addItem(alphabet[i].charAt(i));
+			comboBox.addItem(alphabet[i].charAt(0));
 		}
 
 		setFunctionalAlphabet(false);

@@ -69,5 +69,6 @@ public final class ViewFactory {
 		});
 		t.setRepeats(false);
 		t.start();
+	
 	}
 }

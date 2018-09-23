@@ -1,8 +1,6 @@
 package com.view;
 
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Window.Type;
 import java.util.HashMap;
 
 import javax.swing.JDialog;
@@ -119,10 +117,6 @@ public class AutomataViewer extends JPanel {
 		loadEquivalent();
 	}
 
-	public void closeGraphDialog() {
-
-	}
-
 	public void loadMachine() {
 		load(AutomatonView.MACHINE);
 	}
@@ -136,8 +130,6 @@ public class AutomataViewer extends JPanel {
 			info=main.getAutomataManager().getDataEquivalent();
 			equivalent.setDataAutomata(info);
 		}
-		
-
 	}
 
 	public void loadEquivalent() {
