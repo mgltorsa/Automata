@@ -131,9 +131,12 @@ public class AutomataViewer extends JPanel {
 		HashMap<String, String> info = null;
 		if (type.equals(AutomatonView.MACHINE)) {
 			info = main.getAutomataManager().getDataMachine();
+			machine.setDataAutomata(info);
 		}else {
 			info=main.getAutomataManager().getDataEquivalent();
+			equivalent.setDataAutomata(info);
 		}
+		
 
 	}
 

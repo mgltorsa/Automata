@@ -3,6 +3,9 @@ package manager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
@@ -18,6 +21,9 @@ import com.automata.IAutomata;
 import com.automata.IState;
 import com.automata.ITransition;
 import com.automata.Transition;
+import com.statesMachine.IMealy;
+import com.statesMachine.IMealyTransition;
+import com.statesMachine.IMooreState;
 import com.statesMachine.Mealy;
 import com.statesMachine.MealyTransition;
 import com.statesMachine.Moore;
@@ -246,7 +252,7 @@ public class AutomataManager {
 	}
 
 	public void generateEquivalent() {
-		// TODO Auto-generated method stub
+		equivalent = automaton.getEquivalent();
 
 	}
 
@@ -280,32 +286,71 @@ public class AutomataManager {
 	private HashMap<String, String> getData(IAutomata automaton) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("name", automaton.getId());
-		if(automaton instanceof Mealy) {
-			map.put("type","MEALY");
-			map.put("column-count", ""+(1+ (automaton.getLanguage().getAlphabet().length*2)));
-		}else {
-			map.put("type","MOORE");
-			map.put("column-count", ""+2+(automaton.getLanguage().getAlphabet().length));
+		int columnCount = 0;
+		if (automaton instanceof Mealy) {
+			map.put("type", MEALY);
+			columnCount = (1 + (automaton.getLanguage().getAlphabet().length * 2));
+			map.put("column-count", "" + columnCount);
+		} else {
+			map.put("type", MOORE);
+			columnCount = 2 + (automaton.getLanguage().getAlphabet().length);
+			map.put("column-count", "" + columnCount);
 		}
 		map.put("states-count", automaton.getStates().size() + "");
 		map.put("alphabet-count", automaton.getLanguage().getAlphabet().length + "");
+
 		map.put("alphabet", automaton.getLanguage().toString());
-		
-		createColumns(map, automaton,automaton.getLanguage().getAlphabet());
+
+		createRows(map, automaton);
 
 		return map;
 	}
 
-	private void createColumns(HashMap<String, String> map, IAutomata automaton, char[] alphabet) {
-		int column =0;
-		if(automaton instanceof Mealy) {
-			
-		}
-		else {
-			
-		}
-		
+	private void createRows(HashMap<String, String> map, IAutomata automaton) {
+		int rows = 0;
+		ArrayList<IState> arr = getStatesArray(automaton);
 
+		for (int k = 0; k < arr.size(); k++) {
+
+			IState state = arr.get(k);
+			String line = "";
+			ITransition[] transitions = new ITransition[state.getTransitions().values().size()];
+			line = state.getId();
+			if (automaton instanceof Mealy) {
+				for (int i = 0; i < transitions.length; i++) {
+					String idFinal = transitions[i].getStateFinal().getId();
+					line += ","+transitions[i].getstimulus() + "," + idFinal + ","
+							+ transitions[i].getstimulus() + "," + ((IMealyTransition) transitions[i]).getResponse();
+
+				}
+				map.put(rows + "", line);
+			} else {
+				for (int i = 0; i < transitions.length; i++) {
+					String idFinal = transitions[i].getStateFinal().getId();
+					line += "," + transitions[i].getstimulus() + "," + idFinal;
+				}
+				line+="," + ((IMooreState) state).getResponse();
+				map.put(rows + "", line);
+
+			}
+			rows++;
+		}
+
+	}
+
+	private ArrayList<IState> getStatesArray(IAutomata automaton2) {
+		ArrayList<IState> arr = new ArrayList<IState>();
+		IState initState = automaton.getInitState();
+
+		HashMap<String, IState> states = (HashMap<String, IState>) automaton.getStates().clone();
+		states.remove(initState.getId());
+		arr.add(initState);
+
+		Iterator<IState> iterator = states.values().iterator();
+		while (iterator.hasNext()) {
+			arr.add(iterator.next());
+		}
+		return arr;
 	}
 
 	public HashMap<String, String> getDataEquivalent() {
