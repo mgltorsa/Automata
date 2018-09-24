@@ -1,8 +1,6 @@
 package com.view;
 
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.awt.Window.Type;
 import java.util.HashMap;
 
 import javax.swing.JDialog;
@@ -18,6 +16,10 @@ import com.graphicManagers.ViewDialog;
 
 import manager.AutomataManager;
 
+/**
+ * @author Miguel
+ *
+ */
 @SuppressWarnings("serial")
 public class AutomataViewer extends JPanel {
 
@@ -25,6 +27,7 @@ public class AutomataViewer extends JPanel {
 	private AutomatonView equivalent;
 	private JSplitPane split;
 	private MainView main;
+
 
 	public AutomataViewer(MainView main) {
 		this.main = main;
@@ -50,8 +53,10 @@ public class AutomataViewer extends JPanel {
 		createMachine(AutomataManager.MEALY);
 	}
 
-	public boolean validateLanguage(String data) {
-		return main.getAutomataManager().validateLanguage(data);
+	public boolean validateLanguage(String state,String data) {
+		boolean belong= main.getAutomataManager().validateLanguage(data);
+		boolean notRepeat = main.getAutomataManager().validateLanguage(state,data);
+		return belong &&notRepeat;
 	}
 
 	public boolean validateState(String id) {
@@ -119,10 +124,6 @@ public class AutomataViewer extends JPanel {
 		loadEquivalent();
 	}
 
-	public void closeGraphDialog() {
-
-	}
-
 	public void loadMachine() {
 		load(AutomatonView.MACHINE);
 	}
@@ -135,9 +136,8 @@ public class AutomataViewer extends JPanel {
 		}else {
 			info=main.getAutomataManager().getDataEquivalent();
 			equivalent.setDataAutomata(info);
+			this.add(equivalent);
 		}
-		
-
 	}
 
 	public void loadEquivalent() {

@@ -1,11 +1,11 @@
 package manager;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
@@ -14,14 +14,11 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
 
 import com.automata.IAutomata;
 import com.automata.IState;
 import com.automata.ITransition;
 import com.automata.Transition;
-import com.statesMachine.IMealy;
 import com.statesMachine.IMealyTransition;
 import com.statesMachine.IMooreState;
 import com.statesMachine.Mealy;
@@ -36,7 +33,6 @@ public class AutomataManager {
 	private final static String OUTPUT = "output";
 	private final static String TRANSITION_INPUT = "t_input";
 	private final static String TO_STATE = "to_state";
-	private static SpriteManager spriteManager = null;
 
 	private IAutomata automaton;
 	private IAutomata equivalent;
@@ -117,20 +113,22 @@ public class AutomataManager {
 		// of some state and Output is the output for moore state
 		// If is mealy:
 		// {Estado:id,input1:estadoId,input1:out1,input2:estadoId,input2:out2....}
-		String stateId = info[0].split(":")[1];
-		HashMap<String, String> data = new HashMap<String, String>();
-		data.put(STATE, stateId);
-		addState(data);
-		for (int i = 1; i < info.length - 1; i += 2) {
-			String[] transition = info[i].split(":");
-			String outputInfo[] = info[i + 1].split(":");
-			if (outputInfo.length > 1) {
-				String outputTransition = outputInfo[1];
-				data.put(TRANSITION_INPUT, transition[0]);
-				data.put(OUTPUT, outputTransition);
-				data.put(TO_STATE, transition[1]);
-				if (!outputTransition.isEmpty() && !transition[1].isEmpty()) {
-					addTransition(data);
+		if (info[0].split(":").length > 1) {
+			String stateId = info[0].split(":")[1];
+			HashMap<String, String> data = new HashMap<String, String>();
+			data.put(STATE, stateId);
+			addState(data);
+			for (int i = 1; i < info.length - 1; i += 2) {
+				String[] transition = info[i].split(":");
+				String outputInfo[] = info[i + 1].split(":");
+				if (outputInfo.length > 1 && transition.length > 1) {
+					String outputTransition = outputInfo[1];
+					data.put(TRANSITION_INPUT, transition[0]);
+					data.put(OUTPUT, outputTransition);
+					data.put(TO_STATE, transition[1]);
+					if (!outputTransition.isEmpty() && !transition[1].isEmpty()) {
+						addTransition(data);
+					}
 				}
 			}
 		}
@@ -143,19 +141,27 @@ public class AutomataManager {
 		// of some state and Output is the output for moore state
 		// If is Moore: {Estado:id,input1:estadoId,input2:estadoId....,Output:output}
 		HashMap<String, String> data = new HashMap<String, String>();
-		data.put(STATE, info[0]);
-		data.put(OUTPUT, info[info.length - 1]);
+
+		if (info[0].split(":").length <= 1) {
+			return;
+		}
+		data.put(STATE, info[0].split(":")[1]);
+		if (info[info.length - 1].split(":").length <= 1) {
+			return;
+		}
+		data.put(OUTPUT, info[info.length - 1].split(":")[1]);
 
 		addState(data);
 		for (int i = 1; i < info.length - 1; i++) {
 			String[] infoTransition = info[i].split(":");
-			data.put(TRANSITION_INPUT, infoTransition[0]);
-			data.put(TO_STATE, infoTransition[1]);
-			if (!data.get(TO_STATE).isEmpty()) {
-				addTransition(data);
+			if (infoTransition.length > 1) {
+				data.put(TRANSITION_INPUT, infoTransition[0]);
+				data.put(TO_STATE, infoTransition[1]);
+				if (!data.get(TO_STATE).isEmpty()) {
+					addTransition(data);
+				}
 			}
 		}
-
 	}
 
 	public void setLanguage(String... language) {
@@ -181,7 +187,6 @@ public class AutomataManager {
 		if (automaton != null && !automaton.getStates().isEmpty()) {
 			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 			graph = new MultiGraph(automaton.getId(), false, false);
-			spriteManager = new SpriteManager(graph);
 			IState initState = automaton.getInitState();
 			HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
 			Stack<IState> stack = new Stack<IState>();
@@ -209,6 +214,7 @@ public class AutomataManager {
 		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(133,207,255) ; stroke-mode: plain; "
 				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
 				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: italic ;");
+		node.addAttribute("ui.label", node.getId());
 
 	}
 
@@ -216,17 +222,16 @@ public class AutomataManager {
 		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(185,244,99) ; stroke-mode: plain; "
 				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
 				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: bold-italic ;");
+		node.addAttribute("ui.label", node.getId());
 
 	}
 
 	private void setDefaultEdgeModel(Edge edge, Graph graph) {
 		edge.addAttribute("ui.style",
 				"fill-color: rgb(250,124,97) ; text-color: black; text-style: italic ; text-size: 12px ; size: 3px ;");
-		String[] ids = edge.getId().split("-");
-		String stimulus = ids[1].split(":")[1];
+		String id = edge.getId();
 
-		Sprite sprite = spriteManager.addSprite(edge.getId() + stimulus);
-		sprite.attachToEdge(edge.getId());
+		edge.addAttribute("ui.label", id);
 	}
 
 	private void graphicGraphDfs(IState state, Stack<IState> stack, Graph graph, HashMap<String, Boolean> visited) {
@@ -236,7 +241,7 @@ public class AutomataManager {
 			ITransition transition = state.getTransitions().get(keys.next());
 			IState finalState = transition.getStateFinal();
 			if (graph != null) {
-				String keyEdge = state.getId() + "-" + finalState.getId() + ":" + transition.getstimulus();
+				String keyEdge = transition.getstimulus();
 				graph.addEdge(keyEdge, state.getId(), finalState.getId());
 				setDefaultEdgeModel(graph.getEdge(keyEdge), graph);
 			}
@@ -263,19 +268,23 @@ public class AutomataManager {
 		return false;
 	}
 
-	public void serializeMachine(String path) {
-		try {
-			FileWriter writer = new FileWriter(new File(path));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void serializeMachine(String path) throws Exception {
+		File file = new File(path);
+		if(!file.exists()) {
+			file.createNewFile();
 		}
+		FileOutputStream fileOut = new FileOutputStream(file);
+		ObjectOutputStream output = new ObjectOutputStream(fileOut);
+		output.writeObject(automaton);
+		output.close();
 
 	}
 
-	public void load(String path) {
-		// TODO Auto-generated method stub
-
+	public void load(String path) throws Exception {
+		FileInputStream fileIn = new FileInputStream(new File(path));
+		ObjectInputStream input = new ObjectInputStream(fileIn);
+		automaton = (IAutomata) input.readObject();
+		input.close();
 	}
 
 	public HashMap<String, String> getDataMachine() {
@@ -315,12 +324,13 @@ public class AutomataManager {
 			IState state = arr.get(k);
 			String line = "";
 			ITransition[] transitions = new ITransition[state.getTransitions().values().size()];
+			state.getTransitions().values().toArray(transitions);
 			line = state.getId();
 			if (automaton instanceof Mealy) {
 				for (int i = 0; i < transitions.length; i++) {
 					String idFinal = transitions[i].getStateFinal().getId();
-					line += ","+transitions[i].getstimulus() + "," + idFinal + ","
-							+ transitions[i].getstimulus() + "," + ((IMealyTransition) transitions[i]).getResponse();
+					line += "," + transitions[i].getstimulus() + "," + idFinal + "," + transitions[i].getstimulus()
+							+ "-out" + "," + ((IMealyTransition) transitions[i]).getResponse();
 
 				}
 				map.put(rows + "", line);
@@ -329,7 +339,7 @@ public class AutomataManager {
 					String idFinal = transitions[i].getStateFinal().getId();
 					line += "," + transitions[i].getstimulus() + "," + idFinal;
 				}
-				line+="," + ((IMooreState) state).getResponse();
+				line += "," + ((IMooreState) state).getResponse();
 				map.put(rows + "", line);
 
 			}
@@ -355,6 +365,31 @@ public class AutomataManager {
 
 	public HashMap<String, String> getDataEquivalent() {
 		return getData(equivalent);
+	}
+
+	public boolean validateLanguage(String state, String data) {
+		if (automaton.getState(state) != null) {
+			Iterator<ITransition> iterator = automaton.getState(state).getTransitions().values().iterator();
+
+			if (automaton instanceof Mealy) {
+				while (iterator.hasNext()) {
+					IMealyTransition transition = (IMealyTransition) iterator.next();
+					if (transition.getResponse().equals(data)) {
+						return false;
+					}
+				}
+			}
+			if (automaton instanceof Moore) {
+				while (iterator.hasNext()) {
+					if (iterator.next().getStateFinal().getId().equals(data)) {
+						return false;
+					}
+				}
+			}
+			return true;
+
+		}
+		return true;
 	}
 
 }

@@ -32,7 +32,7 @@ public class Mealy extends Automata implements IMealy{
 		Alphabet alphabet=getLanguage();
 		char[] alp=alphabet.getAlphabet();
 		ArrayList<HashSet<IState>> p1=new ArrayList<HashSet<IState>>();
-		HashMap<String,IState> states=getStates();
+		HashMap<String,IState> states=(HashMap<String, IState>) getStates().clone();
 		ArrayList<IState> statesValues=new ArrayList<IState>(states.values());
 		int size=statesValues.size();
 		boolean[] process=new boolean[size];

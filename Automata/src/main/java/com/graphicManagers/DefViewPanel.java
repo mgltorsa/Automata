@@ -10,6 +10,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.annotation.Documented;
 import java.util.Collection;
 
 import org.graphstream.ui.geom.Point3;
@@ -28,6 +29,15 @@ import com.view.AutomataViewer;
 @SuppressWarnings("serial")
 public class DefViewPanel extends ViewPanel implements WindowListener, ComponentListener {
 
+	/**
+	 * A view on a graphic graph.
+	 * <p>
+	 * <p>
+	 * Basically a view is a Swing panel where a {@link org.graphstream.ui.swingViewer.GraphRenderer} renders the
+	 * graphic graph. If you are in the Swing thread, you can change the view on the
+	 * graphic graph using methods to translate, zoom and rotate the view.
+	 * </p>
+	 */
 	public DefViewPanel(String identifier) {
 		super(identifier);
 	}
@@ -66,13 +76,11 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 	/**
 	 * Main class
 	 */
-
-	// Construction
-
 	public DefViewPanel(Viewer viewer, String identifier, GraphRenderer renderer) {
 		super(identifier);
 		load(viewer, renderer);
 	}
+	
 
 	public void load(Viewer viewer, GraphRenderer renderer) {
 		this.viewer = viewer;
@@ -223,9 +231,7 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 				frame.setVisible(false);
 			break;
 		case EXIT:
-			if (main != null) {
-				main.closeGraphDialog();
-			}
+			frame.dispose();
 		}
 
 	}

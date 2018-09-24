@@ -58,16 +58,20 @@ public final class ViewFactory {
 				component.getLocationOnScreen().x + component.getWidth() / 2,
 				component.getLocationOnScreen().y + component.getHeight());
 
-		popup.show();
-
-		Timer t = new Timer(1000, new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
+		new Thread(new Runnable() {
+			
+			public void run() {
+				popup.show();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				popup.hide();
-
 			}
-		});
-		t.setRepeats(false);
-		t.start();
+		}).start();
+		
+	
 	}
 }
