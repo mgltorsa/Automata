@@ -6,6 +6,7 @@ import javax.swing.JPopupMenu;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -30,8 +31,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import com.graphicManagers.ViewDialog;
-
-import manager.AutomataManager;
+import com.manager.AutomataManager;
 
 import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
@@ -42,7 +42,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class AutomatonView extends JPanel implements ActionListener, ItemListener {
+public class AutomatonView extends JPanel
+		implements
+			ActionListener,
+			ItemListener {
 
 	public final static String MACHINE = "M";
 	public final static String AUTOMATON = "A";
@@ -96,11 +99,13 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		ButtonGroup radioGroup = new ButtonGroup();
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-				Double.MIN_VALUE };
+		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0};
+		gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 0.0,
+				0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		JLabel lblNombre = new JLabel("Nombre");
 		GridBagConstraints gbc_lblNombre = new GridBagConstraints();
@@ -167,7 +172,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		initializeTable();
 
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.gridheight = 4;
 		gbc_scrollPane.gridwidth = 6;
@@ -200,7 +206,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 		btnGenerateEquivalent = new JButton("Equivalente");
 		GridBagConstraints gbc_generateEquivalent = new GridBagConstraints();
-//		gbc_generateEquivalent.gridwidth = 6;
+		// gbc_generateEquivalent.gridwidth = 6;
 		gbc_generateEquivalent.insets = new Insets(0, 0, 0, 5);
 		gbc_generateEquivalent.gridx = 3;
 		gbc_generateEquivalent.gridy = 11;
@@ -219,7 +225,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			public void editingStopped(ChangeEvent e) {
 				int row = getEditingRow();
 				int col = getEditingColumn();
-				super.editingStopped(e); // must call the super code to have a working edition
+				super.editingStopped(e); // must call the super code to have a
+											// working edition
 				if (row == getRowCount() - 1 && col == getColumnCount() - 1) {
 					model.addEmptyRow();
 				}
@@ -228,14 +235,16 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				super.tableChanged(e);
-				if (e.getType() == TableModelEvent.UPDATE || e.getType() == TableModelEvent.INSERT) {
+				if (e.getType() == TableModelEvent.UPDATE
+						|| e.getType() == TableModelEvent.INSERT) {
 					int column = e.getColumn();
 					int row = e.getFirstRow();
 					if (model != null) {
 						if (row >= 0) {
 							if (column >= 1) {
 								if (!model.validateData(row, column)) {
-									ViewFactory.showPopupMessage(table, "Ingrese estado o caracter valido");
+									ViewFactory.showPopupMessage(table,
+											"Ingrese estado o caracter valido");
 									model.setValueAt("", row, column);
 								} else {
 									addRowToAutomata(row);
@@ -247,9 +256,10 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 								if (!model.validateData(row, column)) {
 									addRowToAutomata(row);
 									model.setEditable(row, column, false);
-								}else {
+								} else {
 									model.setValueAt("", row, column);
-									ViewFactory.showPopupMessage(table, "Ingrese un estado no existente");
+									ViewFactory.showPopupMessage(table,
+											"Ingrese un estado no existente");
 								}
 							}
 						}
@@ -263,9 +273,9 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		table.setForeground(Color.BLACK);
 		table.setFont(new Font(Font.SANS_SERIF, Font.ROMAN_BASELINE, 16));
 		table.setCellSelectionEnabled(true);
-//		table.setSelectionBackground(new Color(152, 54, 40));
+		// table.setSelectionBackground(new Color(152, 54, 40));
 		table.setSelectionBackground(new Color(150, 122, 161));
-//		table.setSelectionBackground(new Color(153,57,85));
+		// table.setSelectionBackground(new Color(153,57,85));
 
 	}
 
@@ -273,7 +283,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 		initializeDefaultView();
 
-		comboBox.getEditor().getEditorComponent().addKeyListener(createKeyLister());
+		comboBox.getEditor().getEditorComponent()
+				.addKeyListener(createKeyLister());
 		comboBox.setComponentPopupMenu(createRemoveJPopMenu(ALPHABET_REMOVE));
 
 		chxBinary = new JCheckBox("Binario");
@@ -319,11 +330,16 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 			if (machineType == AutomataManager.MEALY) {
 				setMealyModel();
+				if (model != null && model.validate) {
+					viewer.createMachine(machineType, this);
+				}
 
-			} else {
+			} else if (machineType == AutomataManager.MOORE) {
 				setMooreModel();
+				if (model != null && model.validate) {
+					viewer.createMachine(machineType, this);
+				}
 			}
-			viewer.createMachine(machineType);
 
 		}
 
@@ -425,7 +441,9 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		String[] data = new String[model.getColumnCount()];
 		String message = null;
 		for (int i = 0; i < data.length; i++) {
-			String value = (String) (model.getValueAt(row, i) == null ? "" : model.getValueAt(row, i));
+			String value = (String) (model.getValueAt(row, i) == null
+					? ""
+					: model.getValueAt(row, i));
 			data[i] = model.getColumnName(i) + ":" + value;
 		}
 		if (data[0].trim().isEmpty()) {
@@ -442,7 +460,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	public void showGraphOnDialog(ViewDialog auxDialog) {
 		if (viewDialog != null) {
 			viewDialog.dispose();
-
+			viewDialog=null;
 		}
 		if (auxDialog != null) {
 			viewDialog = auxDialog;
@@ -475,12 +493,14 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 					String text = (String) comboBox.getEditor().getItem();
 					if (text.length() > 1) {
-						ViewFactory.showPopupMessage(comboBox, "¡Debe ingresar un caracter!");
+						ViewFactory.showPopupMessage(comboBox,
+								"¡Debe ingresar un caracter!");
 
 					} else {
 						comboBox.addItem(text.charAt(0));
 						revalidateTable();
-						ViewFactory.showPopupMessage(comboBox, "¡Caracter agregado!");
+						ViewFactory.showPopupMessage(comboBox,
+								"¡Caracter agregado!");
 					}
 
 				}
@@ -500,18 +520,33 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		} else if (e.getActionCommand().equals(STATE_REMOVE)) {
 			removeStates();
 		} else if (e.getActionCommand().equals(ADD_STATE)) {
+			model.setValidate(true);
 			model.addEmptyRow();
-			btnGenerateEquivalent.setEnabled(true);
-			btnGenerateEquivalent.setVisible(true);
+			if (validateGraph()) {
+				btnGenerateEquivalent.setEnabled(true);
+				btnGenerateEquivalent.setVisible(true);
+			}
 		} else if (e.getActionCommand().equals(VIEW_GRAPHIC)) {
-			viewer.showGraphicOnDialog(this.typeView);
+			if (validateGraph()) {
+				viewer.showGraphicOnDialog(this.typeView);
+			} else {
+				JOptionPane.showMessageDialog(this,
+						"Debe rellenar todos los campos", "No se puede generar",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else if (e.getActionCommand().equals(TYPED_NAME)) {
 			String text = textField.getText();
 			if (text != null) {
 				viewer.setAutomatonName(text);
 			}
 		} else if (e.getActionCommand().equals(GENERATE)) {
-			viewer.generateEquivalent();
+			if (validateGraph()) {
+				viewer.generateEquivalent();
+			} else {
+				JOptionPane.showMessageDialog(this,
+						"Debe rellenar todos los campos", "No se puede generar",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 
 	}
@@ -519,12 +554,12 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	private void removeStates() {
 		int[] selectedRows = table.getSelectedRows();
 		if (selectedRows.length > 0) {
-			model.removeRows(selectedRows);
 			for (int i = 0; i < selectedRows.length; i++) {
 				String id = (String) model.getValueAt(i, 0);
 				viewer.removeState(id);
-
 			}
+			model.removeRows(selectedRows);
+
 		}
 
 	}
@@ -533,8 +568,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		String[] language = null;
 		if (chxBinary != null && chxBinary.isSelected()) {
 			language = new String[2];
-			language[0] = "1";
-			language[1] = "2";
+			language[0] = "0";
+			language[1] = "1";
 		} else if (comboBox.getItemCount() > 0) {
 			language = new String[comboBox.getItemCount()];
 			for (int i = 0; i < language.length; i++) {
@@ -547,16 +582,31 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	public void itemStateChanged(ItemEvent e) {
 		JRadioButton radio = (JRadioButton) e.getSource();
 		String command = radio.getActionCommand();
+
 		if (command.equals(AutomataManager.MEALY)) {
-			setMealyModel();
-			viewer.createMachine(machineType);
+			machineType = AutomataManager.MEALY;
+
 		} else {
-			setMooreModel();
-			viewer.createMachine(machineType);
+			machineType = AutomataManager.MOORE;
 		}
+		calculateModel();
+	}
+
+	public boolean validateGraph() {
+		for (int i = 0; i < model.getRowCount(); i++) {
+			for (int j = 0; j < model.getColumnCount(); j++) {
+				if (!model.validateData(i, j, true)) {
+					return false;
+				}
+			}
+			addRowToAutomata(i);
+		}
+		return true;
 	}
 
 	public void setDataAutomata(HashMap<String, String> info) {
+		model.setValidate(false);
+
 		if (typeView == AUTOMATON) {
 			textField.setEditable(false);
 			btnAddState.setEnabled(false);
@@ -566,10 +616,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			rdbtnMealy.setEnabled(false);
 			rdbtnMoore.setEnabled(false);
 			table.setCellSelectionEnabled(false);
-
 			model.setEditable(-1, -1, false);
 		}
-		model.setValidate(false);
 		model.clearColumns();
 		parseInfo(info);
 
@@ -578,7 +626,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 	private void parseInfo(HashMap<String, String> info) {
 		String name = info.get("name");
 		this.textField.setText(name);
-		this.machineType = info.get("type");
 		String[] alphabet = info.get("alphabet").split(",");
 		setFunctionalAlphabet(true);
 		comboBox.removeAllItems();
@@ -587,15 +634,16 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		}
 
 		setFunctionalAlphabet(false);
-		if (machineType.equals(AutomataManager.MEALY)) {
+		if (info.get("type").equals(AutomataManager.MEALY)) {
 			rdbtnMealy.setSelected(true);
-			setMealyModel();
 		} else {
 			rdbtnMoore.setSelected(true);
-			setMooreModel();
 		}
 
 		model.parseInfo(info);
+		if (typeView.equals(MACHINE)) {
+			model.setValidate(true);
+		}
 
 	}
 
@@ -612,7 +660,38 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			super();
 			this.view = view;
 			editables = new HashMap<String, Boolean>();
-			validate = true;
+			validate = false;
+		}
+
+	
+		public boolean validateData(int row, int column, boolean noCreation) {
+			if (!noCreation) {
+				return validateData(row, column);
+			} else {
+				if(!validate) {
+					return true;
+				}
+				String value = (String) getValueAt(row, column);
+				if (value != null && !value.isEmpty()) {
+					String state = (String) getValueAt(row, 0);
+
+					boolean isInAlphabet = true;
+					if (column > 0) {
+						String data = (String) getValueAt(row, column);
+						if (getColumnName(column).contains("out")) {
+							isInAlphabet = isInAlphabet
+									&& viewer.validateAlphabet(data);
+						} else {
+							isInAlphabet = isInAlphabet
+									&& viewer.validateState(data);
+						}
+
+					}
+					boolean existState = viewer.validateState(state);
+					return existState && isInAlphabet;
+				}
+				return true;
+			}
 		}
 
 		public void setEditable(int row, int column, boolean isEditable) {
@@ -642,7 +721,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				String data = (String) getValueAt(row, column);
 				if (data != null && !data.isEmpty()) {
 					if (getColumnName(column).contains("out")) {
-						return view.validateData(data, (String) getValueAt(row, 0), OUTPUT);
+						return view.validateData(data,
+								(String) getValueAt(row, 0), OUTPUT);
 					} else {
 						return view.validateData(null, data, STATE);
 					}
@@ -656,13 +736,14 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 				}
 			}
 
-			return false;
+			return true;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
 		public void setValueAt(Object aValue, int row, int column) {
-			Vector<Object> rowVector = (Vector<Object>) dataVector.elementAt(row);
+			Vector<Object> rowVector = (Vector<Object>) dataVector
+					.elementAt(row);
 			rowVector.setElementAt(aValue, column);
 			String value = (String) aValue;
 			if (!value.isEmpty()) {
@@ -707,7 +788,8 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 		private void removeInColumns(String data) {
 			for (int i = 1; i < getColumnCount(); i++) {
 				for (int j = 0; j < getRowCount(); j++) {
-					if (getValueAt(j, i) != null && getValueAt(j, i).equals(data)) {
+					if (getValueAt(j, i) != null
+							&& getValueAt(j, i).equals(data)) {
 						setValueAt("", j, i);
 						editables.put(j + "," + i, true);
 					}
@@ -774,6 +856,25 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			}
 		}
 
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setValidateMode(boolean b) {
+		if (model != null) {
+			model.setValidate(b);
+		}
+
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setGenerateActive(boolean b) {
+		btnGenerateEquivalent.setEnabled(b);
+		btnGenerateEquivalent.setVisible(b);
+		
 	}
 
 }

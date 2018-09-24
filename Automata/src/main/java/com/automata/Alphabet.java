@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @author Miguel
  *
  */
+@SuppressWarnings("serial")
 public class Alphabet implements Serializable{
 
 	private char[] alphabet;

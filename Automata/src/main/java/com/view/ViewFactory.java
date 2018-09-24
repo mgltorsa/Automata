@@ -131,7 +131,7 @@ public final class ViewFactory {
 			public void run() {
 				popup.show();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 				}
 				popup.hide();
@@ -139,4 +139,5 @@ public final class ViewFactory {
 		}).start();
 
 	}
+	
 }

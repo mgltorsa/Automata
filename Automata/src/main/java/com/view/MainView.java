@@ -11,7 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import manager.AutomataManager;
+import com.manager.AutomataManager;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
@@ -142,7 +142,6 @@ public class MainView extends JFrame implements ActionListener {
 				PerformerView.getInstance().showCreateMachine();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Error al cargar el archivo", "Fail load", JOptionPane.INFORMATION_MESSAGE);
-				e.printStackTrace();
 			}
 		}
 	}

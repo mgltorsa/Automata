@@ -3,6 +3,7 @@ package com.view;
 import java.awt.Dimension;
 import java.util.HashMap;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -13,8 +14,7 @@ import org.graphstream.ui.view.Viewer;
 import com.graphicManagers.ContainViewer;
 import com.graphicManagers.DefViewPanel;
 import com.graphicManagers.ViewDialog;
-
-import manager.AutomataManager;
+import com.manager.AutomataManager;
 
 /**
  * @author Miguel
@@ -61,7 +61,7 @@ public class AutomataViewer extends JPanel {
 		split.setRightComponent(null);
 
 		add(split);
-		createMachine(AutomataManager.MEALY);
+		createMachine(AutomataManager.MEALY, this);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class AutomataViewer extends JPanel {
 		machine = new AutomatonView(AutomatonView.MACHINE, this);
 		split.setLeftComponent(machine);
 		equivalent = new AutomatonView(AutomatonView.AUTOMATON, this);
-		createMachine(AutomataManager.MEALY);
+		createMachine(AutomataManager.MEALY, this);
 	}
 
 	/**
@@ -89,11 +89,28 @@ public class AutomataViewer extends JPanel {
 	 *         case is invalid.
 	 */
 	public boolean validateAlphabet(String state, String data) {
-		boolean belong = main.getAutomataManager().validateLanguage(data);
-		boolean notRepeat = main.getAutomataManager().validateLanguage(state,
-				data);
+		boolean belong = validateAlphabet(data);
+		boolean notRepeat = validateStimulus(state, data);
 		boolean isValid = belong && notRepeat;
 		return isValid;
+	}
+
+	/**
+	 * @param data
+	 * @return
+	 */
+	public boolean validateAlphabet(String data) {
+		return main.getAutomataManager().validateAlphabet(data);
+	}
+
+	/**
+	 * @param state
+	 * @param data
+	 * @return
+	 */
+	public boolean validateStimulus(String state, String data) {
+
+		return main.getAutomataManager().validateLanguage(state, data);
 	}
 
 	/**
@@ -113,7 +130,7 @@ public class AutomataViewer extends JPanel {
 	 * @param type,
 	 *            the type of automaton to create (Mealy or Moore machine)
 	 */
-	public void createMachine(String type) {
+	public void createMachine(String type, JComponent callback) {
 		main.getAutomataManager().createMachine(type);
 	}
 
@@ -128,7 +145,9 @@ public class AutomataViewer extends JPanel {
 	}
 	/**
 	 * Add data row for current states machine.
-	 * @param data, data format can be read in AutomataManager doc
+	 * 
+	 * @param data,
+	 *            data format can be read in AutomataManager doc
 	 */
 	public void addToAutomata(String... data) {
 		main.getAutomataManager().addToAutomata(data);
@@ -137,7 +156,9 @@ public class AutomataViewer extends JPanel {
 
 	/**
 	 * Set a language for current states machine.
-	 * @param language, language that will be set in states machine.
+	 * 
+	 * @param language,
+	 *            language that will be set in states machine.
 	 */
 	public void setLanguageToAutomata(String... language) {
 		if (language != null && language.length > 0) {
@@ -146,10 +167,12 @@ public class AutomataViewer extends JPanel {
 	}
 	/**
 	 * Show a graphic graph in a JDialog.
-	 * @param typeView, indicate if the view is for an states machine or equivalent automaton.
+	 * 
+	 * @param typeView,
+	 *            indicate if the view is for an states machine or equivalent
+	 *            automaton.
 	 */
 	public void showGraphicOnDialog(String typeView) {
-		System.out.println("test");
 		Graph graph = null;
 		if (typeView.equals(AutomatonView.MACHINE)) {
 			graph = main.getAutomataManager().getMachineGraphicGraph();
@@ -164,8 +187,11 @@ public class AutomataViewer extends JPanel {
 
 	/**
 	 * Show a graphic graph in JDialog with automaton view information.
-	 * @param viewGraph, a graphic graph that shows the graphic automaton.
-	 * @param view, a view that contains automaton information.
+	 * 
+	 * @param viewGraph,
+	 *            a graphic graph that shows the graphic automaton.
+	 * @param view,
+	 *            a view that contains automaton information.
 	 */
 	private void showGraphicGraph(Graph viewGraph, AutomatonView view) {
 		ViewDialog auxDialog = null;
@@ -184,10 +210,12 @@ public class AutomataViewer extends JPanel {
 		view.showGraphOnDialog(auxDialog);
 
 	}
-	
+
 	/**
 	 * Set name for current states machine.
-	 * @param text, the name that will be set to current states machine.
+	 * 
+	 * @param text,
+	 *            the name that will be set to current states machine.
 	 */
 
 	public void setAutomatonName(String text) {
@@ -197,42 +225,53 @@ public class AutomataViewer extends JPanel {
 
 	}
 	/**
-	 * Generate and load the equivalent automaton for the current states machine.
+	 * Generate and load the equivalent automaton for the current states
+	 * machine.
 	 */
 
 	public void generateEquivalent() {
 		main.getAutomataManager().generateEquivalent();
 		loadEquivalent();
 	}
-	
+
 	/**
 	 * Create a new states machine and show its AutomatonView.
 	 */
 	public void loadMachine() {
 		load(AutomatonView.MACHINE);
 	}
-	
+
 	/**
 	 * Create a new states machine or automaton and shows its AutomatonViews.
-	 * @param type, the type of automaton view that will be created.
+	 * 
+	 * @param type,
+	 *            the type of automaton view that will be created.
 	 */
 
 	private void load(String type) {
 		HashMap<String, String> info = null;
 		if (type.equals(AutomatonView.MACHINE)) {
 			info = main.getAutomataManager().getDataMachine();
-			machine.setDataAutomata(info);
+			if (info != null) {
+				machine.setDataAutomata(info);
+				machine.setValidateMode(true);
+				machine.setGenerateActive(true);
+			}
 		} else {
 			info = main.getAutomataManager().getDataEquivalent();
-			equivalent.setDataAutomata(info);
-			this.add(equivalent);
+			if (info != null) {
+				equivalent.setDataAutomata(info);
+				this.add(equivalent);
+			}
 		}
 	}
 
 	/**
-	 * Create an equivalent automaton for current states machine and show its AutomatonView.
+	 * Create an equivalent automaton for current states machine and show its
+	 * AutomatonView.
 	 */
 	public void loadEquivalent() {
 		load(AutomatonView.AUTOMATON);
 	}
+
 }

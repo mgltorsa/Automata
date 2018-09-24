@@ -1,4 +1,4 @@
-package manager;
+package com.manager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Stack;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -33,7 +32,7 @@ public class AutomataManager {
 	private final static String OUTPUT = "output";
 	private final static String TRANSITION_INPUT = "t_input";
 	private final static String TO_STATE = "to_state";
-
+	private static int id = 0;
 	private IAutomata automaton;
 	private IAutomata equivalent;
 
@@ -45,8 +44,9 @@ public class AutomataManager {
 		}
 	}
 
-	public boolean validateLanguage(String character) {
-		return automaton.getLanguage().toString().contains(character);
+	public boolean validateAlphabet(String character) {
+		String lang = automaton.getLanguage().toString();
+		return lang.contains(character);
 	}
 
 	public boolean existState(String id) {
@@ -76,24 +76,26 @@ public class AutomataManager {
 		if (automaton instanceof Mealy) {
 			transition = createMealyTransition(data);
 		} else {
-			transition = new Transition(data.get(TRANSITION_INPUT), automaton.getState(data.get(TO_STATE)));
+			transition = new Transition(data.get(TRANSITION_INPUT).trim(),
+					automaton.getState(data.get(TO_STATE)));
 		}
 
-		if (!automaton.getState(data.get(STATE)).getTransitions().containsKey(transition.getstimulus())) {
-			automaton.addTransition(automaton.getState(data.get(STATE)), transition);
+		if (!automaton.getState(data.get(STATE)).getTransitions()
+				.containsKey(transition.getstimulus())) {
+			automaton.addTransition(automaton.getState(data.get(STATE)),
+					transition);
 		}
 	}
 
 	private ITransition createMealyTransition(HashMap<String, String> data) {
 		ITransition transition = null;
-		transition = new MealyTransition(data.get(TRANSITION_INPUT), data.get(OUTPUT),
-				automaton.getState(data.get(TO_STATE)));
+		transition = new MealyTransition(data.get(TRANSITION_INPUT),
+				data.get(OUTPUT), automaton.getState(data.get(TO_STATE)));
 
 		return transition;
 	}
 
 	public void removeState(String id) {
-		System.out.println("removed " + id);
 		automaton.removeState(id);
 
 	}
@@ -109,7 +111,8 @@ public class AutomataManager {
 
 	private void addToMealy(String[] info) {
 		// DATA FORMAT:
-		// Where inputi, out and outi is some character of the language.EstadoId is id
+		// Where inputi, out and outi is some character of the language.EstadoId
+		// is id
 		// of some state and Output is the output for moore state
 		// If is mealy:
 		// {Estado:id,input1:estadoId,input1:out1,input2:estadoId,input2:out2....}
@@ -126,7 +129,8 @@ public class AutomataManager {
 					data.put(TRANSITION_INPUT, transition[0]);
 					data.put(OUTPUT, outputTransition);
 					data.put(TO_STATE, transition[1]);
-					if (!outputTransition.isEmpty() && !transition[1].isEmpty()) {
+					if (!outputTransition.isEmpty()
+							&& !transition[1].isEmpty()) {
 						addTransition(data);
 					}
 				}
@@ -137,9 +141,11 @@ public class AutomataManager {
 
 	private void addToMoore(String... info) {
 		// DATA FORMAT:
-		// Where inputi, out and outi is some character of the language.EstadoId is id
+		// Where inputi, out and outi is some character of the language.EstadoId
+		// is id
 		// of some state and Output is the output for moore state
-		// If is Moore: {Estado:id,input1:estadoId,input2:estadoId....,Output:output}
+		// If is Moore:
+		// {Estado:id,input1:estadoId,input2:estadoId....,Output:output}
 		HashMap<String, String> data = new HashMap<String, String>();
 
 		if (info[0].split(":").length <= 1) {
@@ -165,12 +171,14 @@ public class AutomataManager {
 	}
 
 	public void setLanguage(String... language) {
-		String lang = "";
-		for (int i = 0; i < language.length - 1; i++) {
-			lang += language[i] + ",";
+		if (automaton != null) {
+			String lang = "";
+			for (int i = 0; i < language.length - 1; i++) {
+				lang += language[i] + ",";
+			}
+			lang += language[language.length - 1];
+			automaton.setLanguage(lang);
 		}
-		lang += language[language.length - 1];
-		automaton.setLanguage(lang);
 	}
 
 	public void setName(String id) {
@@ -182,73 +190,85 @@ public class AutomataManager {
 		return parseGraph(automaton);
 	}
 
+	@SuppressWarnings("unchecked")
 	private Graph parseGraph(IAutomata automaton) {
-		System.out.println("automaton");
 		Graph graph = null;
 		if (automaton != null && !automaton.getStates().isEmpty()) {
-			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-			graph = new MultiGraph(automaton.getId(), false, false);
+			System.setProperty("gs.ui.renderer",
+					"org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+			graph = new MultiGraph(automaton.getId() + (id++), false, false);
 			IState initState = automaton.getInitState();
-			HashMap<String, Boolean> visited = new HashMap<String, Boolean>();
-			Stack<IState> stack = new Stack<IState>();
-			setNodesModelToGraph(initState, automaton, graph);
-			graphicGraphDfs(initState, stack, graph, visited);
-			while (!stack.isEmpty()) {
-				IState tempState = stack.pop();
-				graphicGraphDfs(tempState, stack, graph, visited);
+			HashMap<String, IState> states = (HashMap<String, IState>) automaton
+					.getStates().clone();
+			states.remove(initState.getId());
+			setNodesModelToGraph(initState, automaton, graph, true);
+			settingEdges(initState, graph);
+			for (IState state : states.values()) {
+				setNodesModelToGraph(state, automaton, graph, false);
+				settingEdges(state, graph);
 			}
 		}
+
 		return graph;
 	}
 
-	private void setNodesModelToGraph(IState initState, IAutomata automaton, Graph graph) {
-		graph.addNode(initState.getId());
-		setInitialNodeView(graph.getNode(initState.getId()), graph);
-		for (IState state : automaton.getStates().values()) {
-			graph.addNode(state.getId());
+	private void setNodesModelToGraph(IState state, IAutomata automaton,
+			Graph graph, boolean isInitial) {
+		graph.addNode(state.getId());
+		if (isInitial) {
+			setInitialNodeView(graph.getNode(state.getId()), graph);
+		} else {
 			setDefaultNodeView(graph.getNode(state.getId()), graph);
+		}
+		for (IState auxState : automaton.getStates().values()) {
+			if (graph.getNode(auxState.getId()) == null) {
+				graph.addNode(auxState.getId());
+			}
+			setDefaultNodeView(graph.getNode(auxState.getId()), graph);
 		}
 
 	}
 
 	private void setDefaultNodeView(Node node, Graph graph) {
-		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(133,207,255) ; stroke-mode: plain; "
-				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
-				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: italic ;");
+		node.setAttribute("ui.style",
+				"size: 40px; fill-color: rgb(133,207,255) ; stroke-mode: plain; "
+						+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
+						+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; "
+						+ "text-style: italic ;");
 		node.addAttribute("ui.label", node.getId());
 
 	}
 
 	private void setInitialNodeView(Node node, Graph graph) {
-		node.setAttribute("ui.style", "size: 40px; fill-color: rgb(185,244,99) ; stroke-mode: plain; "
-				+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
-				+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; " + "text-style: bold-italic ;");
+		node.setAttribute("ui.style",
+				"size: 40px; fill-color: rgb(185,244,99) ; stroke-mode: plain; "
+						+ "stroke-width: 2px; stroke-color: #CCF; shadow-mode: gradient-radial; shadow-width: "
+						+ "10px; shadow-color: white; shadow-offset: 0px; text-color: black; "
+						+ "text-style: bold-italic ;");
 		node.addAttribute("ui.label", node.getId());
 
 	}
 
-	private void setDefaultEdgeModel(Edge edge, Graph graph) {
+	private void setDefaultEdgeModel(String label, Edge edge, Graph graph) {
 		edge.addAttribute("ui.style",
-				"fill-color: rgb(250,124,97) ; text-color: black; text-style: italic ; text-size: 12px ; size: 3px ;");
-		String id = edge.getId();
+				"fill-color: rgb(250,124,97) ; text-color: black; text-style: italic ; text-size: 12px ; size: 2px ;");
 
-		edge.addAttribute("ui.label", id);
+		edge.addAttribute("ui.label", label);
 	}
 
-	private void graphicGraphDfs(IState state, Stack<IState> stack, Graph graph, HashMap<String, Boolean> visited) {
-		visited.put(state.getId(), true);
+	private void settingEdges(IState state, Graph graph) {
 		Iterator<String> keys = state.getTransitions().keySet().iterator();
 		while (keys.hasNext()) {
 			ITransition transition = state.getTransitions().get(keys.next());
 			IState finalState = transition.getStateFinal();
 			if (graph != null) {
-				String keyEdge = transition.getstimulus();
+				String keyEdge = state.getId() + "-" + transition.getstimulus()
+						+ "-" + finalState.getId();
 				graph.addEdge(keyEdge, state.getId(), finalState.getId());
-				setDefaultEdgeModel(graph.getEdge(keyEdge), graph);
+				setDefaultEdgeModel(transition.toString(),
+						graph.getEdge(keyEdge), graph);
 			}
-			if (!visited.containsKey(finalState.getId())) {
-				stack.push(transition.getStateFinal());
-			}
+
 		}
 	}
 
@@ -258,7 +278,10 @@ public class AutomataManager {
 	}
 
 	public void generateEquivalent() {
-		equivalent = automaton.getEquivalent();
+		if (automaton != null && !automaton.getStates().isEmpty()) {
+
+			equivalent = automaton.getEquivalent();
+		}
 
 	}
 
@@ -271,7 +294,7 @@ public class AutomataManager {
 
 	public void serializeMachine(String path) throws Exception {
 		File file = new File(path);
-		if(!file.exists()) {
+		if (!file.exists()) {
 			file.createNewFile();
 		}
 		FileOutputStream fileOut = new FileOutputStream(file);
@@ -284,7 +307,7 @@ public class AutomataManager {
 	public void load(String path) throws Exception {
 		FileInputStream fileIn = new FileInputStream(new File(path));
 		ObjectInputStream input = new ObjectInputStream(fileIn);
-		automaton = (IAutomata) input.readObject();
+		this.automaton = (IAutomata) input.readObject();
 		input.close();
 	}
 
@@ -293,25 +316,30 @@ public class AutomataManager {
 		return getData(automaton);
 	}
 
-	private HashMap<String, String> getData(IAutomata automaton) {
-		HashMap<String, String> map = new HashMap<String, String>();
-		map.put("name", automaton.getId());
-		int columnCount = 0;
-		if (automaton instanceof Mealy) {
-			map.put("type", MEALY);
-			columnCount = (1 + (automaton.getLanguage().getAlphabet().length * 2));
-			map.put("column-count", "" + columnCount);
-		} else {
-			map.put("type", MOORE);
-			columnCount = 2 + (automaton.getLanguage().getAlphabet().length);
-			map.put("column-count", "" + columnCount);
+	private HashMap<String, String> getData(IAutomata auto) {
+		HashMap<String, String> map = null;
+		if (auto != null) {
+			map=new HashMap<String, String>();
+			map.put("name", auto.getId());
+			int columnCount = 0;
+			if (auto instanceof Mealy) {
+				map.put("type", MEALY);
+				columnCount = (1
+						+ (auto.getLanguage().getAlphabet().length * 2));
+				map.put("column-count", "" + columnCount);
+			} else {
+				map.put("type", MOORE);
+				columnCount = 2 + (auto.getLanguage().getAlphabet().length);
+				map.put("column-count", "" + columnCount);
+			}
+			map.put("states-count", auto.getStates().size() + "");
+			map.put("alphabet-count",
+					auto.getLanguage().getAlphabet().length + "");
+
+			map.put("alphabet", auto.getLanguage().toString());
+
+			createRows(map, auto);
 		}
-		map.put("states-count", automaton.getStates().size() + "");
-		map.put("alphabet-count", automaton.getLanguage().getAlphabet().length + "");
-
-		map.put("alphabet", automaton.getLanguage().toString());
-
-		createRows(map, automaton);
 
 		return map;
 	}
@@ -324,14 +352,16 @@ public class AutomataManager {
 
 			IState state = arr.get(k);
 			String line = "";
-			ITransition[] transitions = new ITransition[state.getTransitions().values().size()];
+			ITransition[] transitions = new ITransition[state.getTransitions()
+					.values().size()];
 			state.getTransitions().values().toArray(transitions);
 			line = state.getId();
 			if (automaton instanceof Mealy) {
 				for (int i = 0; i < transitions.length; i++) {
 					String idFinal = transitions[i].getStateFinal().getId();
-					line += "," + transitions[i].getstimulus() + "," + idFinal + "," + transitions[i].getstimulus()
-							+ "-out" + "," + ((IMealyTransition) transitions[i]).getResponse();
+					line += "," + transitions[i].getstimulus() + "," + idFinal
+							+ "," + transitions[i].getstimulus() + "-out" + ","
+							+ ((IMealyTransition) transitions[i]).getResponse();
 
 				}
 				map.put(rows + "", line);
@@ -349,11 +379,13 @@ public class AutomataManager {
 
 	}
 
-	private ArrayList<IState> getStatesArray(IAutomata automaton2) {
+	@SuppressWarnings("unchecked")
+	private ArrayList<IState> getStatesArray(IAutomata automaton) {
 		ArrayList<IState> arr = new ArrayList<IState>();
 		IState initState = automaton.getInitState();
 
-		HashMap<String, IState> states = (HashMap<String, IState>) automaton.getStates().clone();
+		HashMap<String, IState> states = (HashMap<String, IState>) automaton
+				.getStates().clone();
 		states.remove(initState.getId());
 		arr.add(initState);
 
@@ -370,11 +402,13 @@ public class AutomataManager {
 
 	public boolean validateLanguage(String state, String data) {
 		if (automaton.getState(state) != null) {
-			Iterator<ITransition> iterator = automaton.getState(state).getTransitions().values().iterator();
+			Iterator<ITransition> iterator = automaton.getState(state)
+					.getTransitions().values().iterator();
 
 			if (automaton instanceof Mealy) {
 				while (iterator.hasNext()) {
-					IMealyTransition transition = (IMealyTransition) iterator.next();
+					IMealyTransition transition = (IMealyTransition) iterator
+							.next();
 					if (transition.getResponse().equals(data)) {
 						return false;
 					}
@@ -391,6 +425,13 @@ public class AutomataManager {
 
 		}
 		return true;
+	}
+
+	/**
+	 * @return
+	 */
+	public IAutomata getMachine() {
+		return automaton;
 	}
 
 }

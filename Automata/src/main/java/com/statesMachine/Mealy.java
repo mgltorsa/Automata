@@ -11,28 +11,33 @@ import com.automata.*;
 
 /**
  * @author Miguel
- * @author alejandro
- * class used for modeling a Automata of type Mealy
+ * @author alejandro class used for modeling a Automata of type Mealy
  */
 @SuppressWarnings("serial")
-public class Mealy extends Automata implements IMealy{
+public class Mealy extends Automata implements IMealy {
 
 	public String function(IState state, String stimulus) {
-		IMealyTransition transition=(IMealyTransition) getTransition(state, stimulus);
-		
+		IMealyTransition transition = (IMealyTransition) getTransition(state,
+				stimulus);
+
 		return transition.getResponse();
 	}
-	public void addTransition(IState stateInitial, IState stateFinal, String stimulus, String response) {
-		IMealyTransition tran=new MealyTransition(stimulus,response,stateFinal);
+	public void addTransition(IState stateInitial, IState stateFinal,
+			String stimulus, String response) {
+		IMealyTransition tran = new MealyTransition(stimulus, response,
+				stateFinal);
 		addTransition(stateInitial, tran);
-		
+
 	}
 	public IAutomata getEquivalent() {
 		convex();
 		Alphabet alphabet=getLanguage();
 		char[] alp=alphabet.getAlphabet();
 		ArrayList<HashSet<IState>> p1=new ArrayList<HashSet<IState>>();
-		ArrayList<IState> statesValues=new ArrayList<IState>(getStates().values());
+		
+		ArrayList<IState> statesValues=new ArrayList<IState>();
+		HashMap<String, IState> cloneMap = (HashMap<String, IState>) getStates().clone();
+		statesValues.addAll( cloneMap.values()  );
 		int size=statesValues.size();
 		boolean[] process=new boolean[size];
 		for (int i=0;i<size;i++) {
@@ -104,7 +109,7 @@ public class Mealy extends Automata implements IMealy{
 		return mealy;
 	}
 	public static void main(String[] args) {
-		IMealy mealy=new Mealy();
+		IMealy mealy = new Mealy();
 		mealy.setLanguage("a,b");
 		mealy.addState("A");
 		mealy.addState("B");
@@ -114,54 +119,47 @@ public class Mealy extends Automata implements IMealy{
 		mealy.addState("F");
 		mealy.addState("G");
 		mealy.setInitialState("A");
-		mealy.addTransition(mealy.getState("A"),mealy.getState("B"),"a","0");
-		mealy.addTransition(mealy.getState("A"),mealy.getState("E"),"b","1");
-		
-		mealy.addTransition(mealy.getState("B"),mealy.getState("F"),"a","1");
-		mealy.addTransition(mealy.getState("B"),mealy.getState("C"),"b","1");
-		
-		mealy.addTransition(mealy.getState("C"),mealy.getState("D"),"a","0");
-		mealy.addTransition(mealy.getState("C"),mealy.getState("F"),"b","1");
-		
-		mealy.addTransition(mealy.getState("D"),mealy.getState("G"),"a","1");
-		mealy.addTransition(mealy.getState("D"),mealy.getState("C"),"b","1");
-		
-		mealy.addTransition(mealy.getState("E"),mealy.getState("F"),"a","1");
-		mealy.addTransition(mealy.getState("E"),mealy.getState("F"),"b","1");
-		
-		mealy.addTransition(mealy.getState("F"),mealy.getState("F"),"a","1");
-		mealy.addTransition(mealy.getState("F"),mealy.getState("F"),"b","1");
-		
-		mealy.addTransition(mealy.getState("G"),mealy.getState("F"),"a","1");
-		mealy.addTransition(mealy.getState("G"),mealy.getState("F"),"b","1");
-		
-			
-		IAutomata equi=mealy.getEquivalent();
-		HashMap<String, IState> states=equi.getStates();
-		Alphabet al=equi.getLanguage();
-		char[] len=al.getAlphabet();
-		String line="      ";
+		mealy.addTransition(mealy.getState("A"), mealy.getState("B"), "a", "0");
+		mealy.addTransition(mealy.getState("A"), mealy.getState("E"), "b", "1");
+
+		mealy.addTransition(mealy.getState("B"), mealy.getState("F"), "a", "1");
+		mealy.addTransition(mealy.getState("B"), mealy.getState("C"), "b", "1");
+
+		mealy.addTransition(mealy.getState("C"), mealy.getState("D"), "a", "0");
+		mealy.addTransition(mealy.getState("C"), mealy.getState("F"), "b", "1");
+
+		mealy.addTransition(mealy.getState("D"), mealy.getState("G"), "a", "1");
+		mealy.addTransition(mealy.getState("D"), mealy.getState("C"), "b", "1");
+
+		mealy.addTransition(mealy.getState("E"), mealy.getState("F"), "a", "1");
+		mealy.addTransition(mealy.getState("E"), mealy.getState("F"), "b", "1");
+
+		mealy.addTransition(mealy.getState("F"), mealy.getState("F"), "a", "1");
+		mealy.addTransition(mealy.getState("F"), mealy.getState("F"), "b", "1");
+
+		mealy.addTransition(mealy.getState("G"), mealy.getState("F"), "a", "1");
+		mealy.addTransition(mealy.getState("G"), mealy.getState("F"), "b", "1");
+
+		IAutomata equi = mealy.getEquivalent();
+		HashMap<String, IState> states = equi.getStates();
+		Alphabet al = equi.getLanguage();
+		char[] len = al.getAlphabet();
+		String line = "      ";
 		for (int i = 0; i < len.length; i++) {
-			line+=len[i]+"     ";
+			line += len[i] + "     ";
 		}
 		System.out.println(line);
-		ArrayList<String> keys=new ArrayList<String>(states.keySet());
+		ArrayList<String> keys = new ArrayList<String>(states.keySet());
 		for (String string : keys) {
-			String l=equi.getState(string)+"  ";
+			String l = equi.getState(string) + "  ";
 			for (int i = 0; i < len.length; i++) {
-				IMealyTransition tra=(IMealyTransition) equi.getTransition(equi.getState(string), len[i]+"");
-				l+=tra.getStateFinal()+","+tra.getResponse()+"   ";
+				IMealyTransition tra = (IMealyTransition) equi
+						.getTransition(equi.getState(string), len[i] + "");
+				l += tra.getStateFinal() + "," + tra.getResponse() + "   ";
 			}
 			System.out.println(l);
 		}
-		
-		
 
 	}
-
-
-	
-	
-	
 
 }

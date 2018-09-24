@@ -1,0 +1,42 @@
+Instrucciones de uso.
+Para iniciar el programa desde el codigo fuente debe iniciar el metodo
+main en la clase PerformerView en el paquete com.view
+
+1.Ahora bien, una vez iniciado el programa, tiene 3 opciones, agregar una maquina de estados,
+subir un archivo guardado con anterioridad o bien regresar a estas instrucciones.
+2.Si pone su mouse sobre algun boton un cuadro emergente le dira su función.
+
+Agregar una maquina de estados:
+1.Al dar click en la opcion agregar maquina de estados, frente a usted aparecera
+un formulario donde podra ingresar datos para crear y/o modificar la maquina.
+
+2.Para cambiar el lenguaje: Debe desactivar el boton "binario" en ingresar texto el 
+cuadro de texto alfabeto, para ingresar un caracter al alfabeto debe ingresar el caracter
+que desee en el cuadro de texto y presionar enter, si no es posible añadir el caracter
+el sistema le avisara.
+
+3. Para cambiar entre Mealy y Moore: Debe dar click a uno de los botones (mealy o moore)
+y esto reajustara la tabla pero borrara la información en ella.
+
+4. Para añadir un estado: De click al boton agregar estado y esto agregara una fila a la
+tabla frente a usted.
+
+5. Agregando información: Puede agregar información en cada una de las celdas, sin embargo
+debe hacerlo de la siguiente manera:
+	5.1 Si se encuentra en una maquina Moore: En una fila ingrese el nombre del estado y a continuación
+		dirijase a la columna output e ingrese la respuesta del estado.
+	5.2 Si se encuentra en una maquina Mealy: Primero ingrese el nombre del estado antes de cualquier
+		información.
+	
+	Consideraciones: Una vez ingresado un valor en una celda no sera posible cambiarlo, asi que si desea
+	modificar la fila debera borrarla, para ello puede usar el menu que aparecera al presionar
+	el click derecho, este menu le permite borrar una fila, tenga en cuenta que al borrar una fila
+	las entradas que tengan el nombre de este estado seran borradas.
+	
+6. Para calcular automata equivalente minimo conexo: Solo debe presionar el boton que se le habilitar
+ya sea al agregar una fila o al subir un archivo, llamado equivalente, este boton generara el automata
+equivalente al ingresado y lo mostrar en una panel que aparecera luego de encontrar el equivalente.
+
+7.Puede ver el automata pulsando el boton ver grafico : En el grafico, puede que la configuración de
+su pantalla no ayude a la muestra del grafico o haga que se muestre de forma irregular, para ello
+haciendo uso de el wheel de su mouse puede hacer zoom in o zoom out en el grafico.
