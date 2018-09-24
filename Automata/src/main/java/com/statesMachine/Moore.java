@@ -14,6 +14,7 @@ import com.automata.*;
  * class used for modeling a Automata of type Mealy
  *
  */
+@SuppressWarnings("serial")
 public class Moore extends Automata implements IMoore{
 
 
@@ -31,6 +32,7 @@ public class Moore extends Automata implements IMoore{
 	}
 	
 	public IAutomata getEquivalent() {
+		convex();
 		HashMap<String,HashSet<IState>> p1=new HashMap<String,HashSet<IState>>();
 		HashMap<String,IState> states=getStates();
 		ArrayList<IState> statesValues=new ArrayList<IState>(states.values());

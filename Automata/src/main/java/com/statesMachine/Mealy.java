@@ -28,6 +28,7 @@ public class Mealy extends Automata implements IMealy{
 		
 	}
 	public IAutomata getEquivalent() {
+		convex();
 		Alphabet alphabet=getLanguage();
 		char[] alp=alphabet.getAlphabet();
 		ArrayList<HashSet<IState>> p1=new ArrayList<HashSet<IState>>();

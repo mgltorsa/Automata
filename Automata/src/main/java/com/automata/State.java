@@ -9,6 +9,7 @@ import java.util.HashMap;
  * @author Miguel
  *
  */
+@SuppressWarnings("serial")
 public class State implements IState{
 	private String id;
 	private HashMap<String ,ITransition> transitions;
