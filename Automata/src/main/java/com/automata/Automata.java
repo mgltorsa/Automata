@@ -10,7 +10,7 @@ import java.util.*;
  *
  */
 @SuppressWarnings("serial")
-public abstract class Automata implements IAutomata {
+public abstract class Automata implements IAutomata{
 	private String id;
 	private Alphabet language;
 	private IState initState;
@@ -25,7 +25,27 @@ public abstract class Automata implements IAutomata {
 		language = new Alphabet();
 		states = new HashMap<String, IState>();
 	}
-
+	
+	public void convex() {
+		HashMap<String, IState>tmp=new HashMap<String, IState>();
+		HashSet<IState> mar=new HashSet<IState>();
+		Stack<IState> stack=new Stack<IState>();
+		stack.push(initState);
+		while(!stack.isEmpty()) {
+			IState proces=stack.pop();
+			if(!mar.contains(proces)) {
+				mar.add(proces);
+				HashMap<String,ITransition> tran=proces.getTransitions();
+				Iterator<ITransition> iterato=tran.values().iterator();
+				while(iterato.hasNext()) {
+					stack.push(iterato.next().getStateFinal());
+				}
+				tmp.put(proces.getId(),proces);
+			}
+		}
+		
+		states=tmp;
+	}
 	public void setId(String id) {
 		this.id = id;
 	}

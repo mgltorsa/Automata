@@ -28,11 +28,11 @@ public class Mealy extends Automata implements IMealy{
 		
 	}
 	public IAutomata getEquivalent() {
+		convex();
 		Alphabet alphabet=getLanguage();
 		char[] alp=alphabet.getAlphabet();
 		ArrayList<HashSet<IState>> p1=new ArrayList<HashSet<IState>>();
-		HashMap<String,IState> states=(HashMap<String, IState>) getStates().clone();
-		ArrayList<IState> statesValues=new ArrayList<IState>(states.values());
+		ArrayList<IState> statesValues=new ArrayList<IState>(getStates().values());
 		int size=statesValues.size();
 		boolean[] process=new boolean[size];
 		for (int i=0;i<size;i++) {
@@ -113,6 +113,7 @@ public class Mealy extends Automata implements IMealy{
 		mealy.addState("E");
 		mealy.addState("F");
 		mealy.addState("G");
+		mealy.setInitialState("A");
 		mealy.addTransition(mealy.getState("A"),mealy.getState("B"),"a","0");
 		mealy.addTransition(mealy.getState("A"),mealy.getState("E"),"b","1");
 		

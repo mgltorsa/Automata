@@ -14,6 +14,7 @@ import com.automata.*;
  * class used for modeling a Automata of type Mealy
  *
  */
+@SuppressWarnings("serial")
 public class Moore extends Automata implements IMoore{
 
 
@@ -31,6 +32,7 @@ public class Moore extends Automata implements IMoore{
 	}
 	
 	public IAutomata getEquivalent() {
+		convex();
 		HashMap<String,HashSet<IState>> p1=new HashMap<String,HashSet<IState>>();
 		HashMap<String,IState> states=getStates();
 		ArrayList<IState> statesValues=new ArrayList<IState>(states.values());
@@ -59,6 +61,11 @@ public class Moore extends Automata implements IMoore{
 		for (String string : keys) {
 			HashSet<IState> proces=automata.get(string);
 			IState first=proces.iterator().next();
+			if(getInitState()!=null) {
+				if(proces.contains(getInitState())) {
+					moore.setInitialState(moore.getState(string));
+				}
+			}
 			for (char st : alp) {
 				IState second=transitionFunction(first, st+"");
 				for (String key : keys) {
@@ -90,6 +97,7 @@ public class Moore extends Automata implements IMoore{
 		moore.addState("E","0");
 		moore.addState("F","0");
 		moore.addState("G","0");
+		moore.setInitialState("A");
 		moore.addTransition(moore.getState("A"),new Transition("a",moore.getState("B")));
 		moore.addTransition(moore.getState("A"),new Transition("b",moore.getState("E")));
 		
