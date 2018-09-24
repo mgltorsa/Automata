@@ -37,7 +37,7 @@ public class PerformerView extends JFrame implements ActionListener{
 	/**
 	 * Path of about file with instructions user.
 	 */
-	public final static String ABOUT_PATH = System.getProperty("usr.dir")+"/doc/about.txt";
+	public final static String ABOUT_PATH = System.getProperty("user.dir")+"/doc/about.txt";
 	/**
 	 * Content pane of this Frame
 	 */
