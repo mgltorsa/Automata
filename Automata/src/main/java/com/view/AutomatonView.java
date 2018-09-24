@@ -9,7 +9,6 @@ import javax.swing.JMenuItem;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -246,7 +245,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 							} else if (column == 0) {
 
 								if (!model.validateData(row, column)) {
-									System.out.println(model.getValueAt(row, column));
 									addRowToAutomata(row);
 									model.setEditable(row, column, false);
 								}else {
@@ -309,7 +307,7 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 
 	public boolean validateData(String data, String state, int type) {
 		if (type == AutomatonTableModel.OUTPUT) {
-			return viewer.validateLanguage(state, data);
+			return viewer.validateAlphabet(state, data);
 		} else {
 			return viewer.validateState(state);
 		}
@@ -506,7 +504,6 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			btnGenerateEquivalent.setEnabled(true);
 			btnGenerateEquivalent.setVisible(true);
 		} else if (e.getActionCommand().equals(VIEW_GRAPHIC)) {
-			// TODO
 			viewer.showGraphicOnDialog(this.typeView);
 		} else if (e.getActionCommand().equals(TYPED_NAME)) {
 			String text = textField.getText();
@@ -662,9 +659,10 @@ public class AutomatonView extends JPanel implements ActionListener, ItemListene
 			return false;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void setValueAt(Object aValue, int row, int column) {
-			Vector rowVector = (Vector) dataVector.elementAt(row);
+			Vector<Object> rowVector = (Vector<Object>) dataVector.elementAt(row);
 			rowVector.setElementAt(aValue, column);
 			String value = (String) aValue;
 			if (!value.isEmpty()) {

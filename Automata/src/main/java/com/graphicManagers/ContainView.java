@@ -12,8 +12,17 @@ import org.graphstream.ui.view.Viewer;
 @SuppressWarnings("serial")
 public class ContainView extends DefViewPanel {
 
+	/**
+	 * A dialog that contains a view of graphic graph
+	 */
 	private ViewDialog viewDialog;
 
+	/**
+	 * An instance of DefViewPanel
+	 * @param viewer, the main viewer of the graphic graph.
+	 * @param identifier, and identifier of this view.
+	 * @param renderer, a renderer of graphic graph.
+	 */
 	public ContainView(Viewer viewer, String identifier, GraphRenderer renderer) {
 		super(viewer, identifier, renderer);
 

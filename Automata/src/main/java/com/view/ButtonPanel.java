@@ -4,20 +4,17 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import java.awt.BorderLayout;
 
@@ -28,6 +25,7 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class ButtonPanel extends JPanel implements MouseListener{
 
+	/**The size of the button's stroke */
 	protected int strokeSize = 1;
 	/** Color of shadow */
 	protected Color shadowColor = Color.black;
@@ -56,13 +54,16 @@ public class ButtonPanel extends JPanel implements MouseListener{
 	/**is pressed*/
 	protected boolean isPressed=false;
 
+	/**
+	 * A Panel that works like a button
+	 */
 	public ButtonPanel() {
 		super();
 		setOpaque(false);
 		
 		listeners = new ArrayList<ActionListener>();
 		clickColor = ViewFactory.ButtonPanePressed;
-		backgroundColor = ViewFactory.ButtonPaneBackgorund;
+		backgroundColor = ViewFactory.ButtonPanelBackgorund;
 		setFocusable(true);
 		setLayout(new BorderLayout(0, 0));
 		lblIcon = new JLabel();
@@ -71,14 +72,26 @@ public class ButtonPanel extends JPanel implements MouseListener{
 		addMouseListener(this);
 	}
 
+	/**
+	 * Set action command for callback action listeners.
+	 * @param command, the command for callback action listeners.
+	 */
 	public void setCommand(String command) {
 		this.command=command;
 	}
 	
+	/**
+	 * Set tooltip message for the Panel.
+	 * @param message, the message that will be assign.
+	 */
 	public void setMessage(String message) {
 		this.setToolTipText(message);
 	}
 	
+	/**
+	 * Set icon to lblIcon in this panel button.
+	 * @param image, image that will be draw.
+	 */
 	public void setIcon(ImageIcon image) {
 		
 		Icon icon = new ImageIcon(image.getImage().getScaledInstance( (int) (this.getWidth()*0.9), (int)(this.getHeight()*0.9), Image.SCALE_DEFAULT));
@@ -86,12 +99,19 @@ public class ButtonPanel extends JPanel implements MouseListener{
 		
 	}
 	
+	/**
+	 * Change the background color of the panel.
+	 * @param color, color to change.
+	 */
+	
 	public void changeBackgroundColor(Color color) {
 		backgroundColor=color;
 	}
 	
-	
-	
+	/**
+	 * Change the click color of the panel.
+	 * @param color, color to change.
+	 */	
 	public void changeClickColor(Color color) {
 		clickColor=color;
 	}
@@ -138,11 +158,19 @@ public class ButtonPanel extends JPanel implements MouseListener{
 		graphics.setStroke(new BasicStroke());
 	}
 
+	/**
+	 * Add action listeners to list of listeners.
+	 * @param listeners, listeners that will be add.
+	 */
 	public void addContainerListener(ActionListener... listeners) {
 		for(ActionListener listener: listeners) {
 			this.listeners.add(listener);
 		}		
 	}
+	
+	/**
+	 * Callback all listeners in this button.
+	 */
 	
 	public void callListeners() {
 		for (ActionListener listener : listeners) {

@@ -16,9 +16,20 @@ import com.view.AutomataViewer;
 
 public class ContainViewer extends Viewer {
 
+	/**
+	 * A container with a dialog with a view of the graphic graph 
+	 */
 	protected ContainView containView;
+	/**
+	 * A view that contains view of graphic graph.
+	 */
 	protected DefViewPanel view;
 
+	/**
+	 * And instance of a main viewer of some graphic graphs
+	 * @param graph, a graphic graph.
+	 * @param threadingModel, indicates if the graphic graph is showing in another thread.
+	 */
 	public ContainViewer(Graph graph, ThreadingModel threadingModel) {
 		super(graph, threadingModel);
 
@@ -47,7 +58,11 @@ public class ContainViewer extends Viewer {
 			return view;
 		}
 	}
-
+	
+	/**
+	 * Initialize this viewer's components and render the graphic graph.
+	 * @param graph, the graphic graph.
+	 */
 	public void load(Graph graph) {
 
 		graphInAnotherThread = false;
@@ -56,17 +71,28 @@ public class ContainViewer extends Viewer {
 
 	}
 
+	/**
+	 * Return a view of this viewer.
+	 * @return view, a view that contains a graphic graph
+	 */
 	public DefViewPanel getView() {
 		return view;
 	}
-
-
+	
+	/**
+	 * Set main listener for callbacks to main frame.
+	 * @param main, main listener 
+	 */
 	public void setMain(AutomataViewer main) {
 		if (view != null) {
 			view.setMain(main);
 		}
 	}
 
+	/**
+	 * Return the graphic graph of this viewer.
+	 * @return graphicGraph, if a graphic graph was rendered in this viewer retorn its instance.
+	 */
 	public GraphicGraph getViewGraph() {
 		if (view != null) {
 			return view.getGraphicGraph();
@@ -75,12 +101,18 @@ public class ContainViewer extends Viewer {
 		}
 	}
 
+	/**
+	 * Refresh the view of this viewer.
+	 */
 	public void refreshDefViewPane() {
 		if (view != null) {
 			view.display(graph, true);
 		}
 	}
 
+	/**
+	 * Set graphic graph with default attributes for this viewer.
+	 */
 	public void defaultGraphicGraph() {
 		if (view != null) {
 			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");

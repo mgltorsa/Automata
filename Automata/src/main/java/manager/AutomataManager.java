@@ -183,6 +183,7 @@ public class AutomataManager {
 	}
 
 	private Graph parseGraph(IAutomata automaton) {
+		System.out.println("automaton");
 		Graph graph = null;
 		if (automaton != null && !automaton.getStates().isEmpty()) {
 			System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");

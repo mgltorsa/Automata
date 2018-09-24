@@ -11,14 +11,25 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
 import com.view.AutomataViewer;
 
 public class MouseActions extends DefaultMouseManager {
+	/**
+	 * Init point for an specific mouse pressed event.
+	 */
 	protected Point initPoint;
+	/**
+	 * Init point for an specific mouse pressed event.
+	 */
 	protected Point lastPoint;
+	/**
+	 * Camera that is watching the graphic graph.
+	 */
 	protected Camera camera;	
+	/**
+	 * main listener or callback for main panels.
+	 */
 	private AutomataViewer main;
 
 	@Override
 	public void init(GraphicGraph graph, View view) {
-		// TODO Auto-generated method stub
 		super.init(graph, view);
 		
 		camera = view.getCamera();
@@ -63,24 +74,33 @@ public class MouseActions extends DefaultMouseManager {
 
 	}
 
+	/**
+	 * Move view of the graphic graph to up.
+	 */
 	private void moveToUp() {
 		DefViewPanel def = (DefViewPanel) view;
 		def.moveToUp();
 
 	}
-
+	/**
+	 * Move view of the graphic graph to down.
+	 */
 	private void moveToDown() {
 		DefViewPanel def = (DefViewPanel) view;
 		def.moveToDown();
 
 	}
-
+	/**
+	 * Move view of the graphic graph to right.
+	 */
 	private void moveToRight() {
 		DefViewPanel def = (DefViewPanel) view;
 		def.moveToRight();
 
 	}
-
+	/**
+	 * Move view of the graphic graph to left.
+	 */
 	private void moveToLeft() {
 		DefViewPanel def = (DefViewPanel) view;
 		def.moveToLeft();
@@ -114,7 +134,10 @@ public class MouseActions extends DefaultMouseManager {
 		initPoint = null;
 		lastPoint = null;
 	}
-
+	/**
+	 * For set principal lister or main callback.
+	 * @param main, an AutomataViewer that contains Automaton views
+	 */
 	public void setMain(AutomataViewer main) {
 		this.main = main;
 	}

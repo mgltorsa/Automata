@@ -10,7 +10,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.lang.annotation.Documented;
 import java.util.Collection;
 
 import org.graphstream.ui.geom.Point3;
@@ -71,6 +70,9 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 	 */
 	protected GraphRenderer renderer;
 
+	/**
+	 * The main listener for callback to main panels.
+	 */
 	private AutomataViewer main;
 
 	/**
@@ -81,12 +83,17 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		load(viewer, renderer);
 	}
 	
+	/**
+	 * Load a view on a graphic graph
+	 * @param viewer. Viewer of the graphic graph
+	 * @param renderer. Render of the graphic graph.
+	 */
 
 	public void load(Viewer viewer, GraphRenderer renderer) {
 		this.viewer = viewer;
 		this.graph = viewer.getGraphicGraph();
 		this.renderer = renderer;
-		setOpaque(false);
+		setOpaque(false); 
 		setDoubleBuffered(true);
 		setMouseManager(null);
 		setShortcutManager(null);
@@ -105,11 +112,15 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		});
 
 	}
+	
+	/**
+	 * Get camera tath is watching the graphic graph.
+	 */
 
 	public Camera getCamera() {
 		return renderer.getCamera();
 	}
-
+	
 	public void display(GraphicGraph graph, boolean graphChanged) {
 		repaint();
 	}
@@ -124,6 +135,9 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		render(g2);
 	}
 
+	/**
+	 * Check if frame!=null and set a default title
+	 */
 	protected void checkTitle() {
 		if (frame != null) {
 			String titleAttr = String.format("ui.%s.title", getId());
@@ -183,6 +197,10 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		}
 	}
 
+	/**
+	 * Render the graphic graph on this view.
+	 * @param g. Graphics of this pane.
+	 */
 	public void render(Graphics2D g) {
 		renderer.render(g, getX(), getY(), getWidth(), getHeight());
 
@@ -193,8 +211,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			renderer.screenshot(screenshot, getWidth(), getHeight());
 		}
 	}
-
-	// Selection
 
 	public void beginSelectionAt(double x1, double y1) {
 		renderer.beginSelectionAt(x1, y1);
@@ -210,8 +226,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		renderer.endSelectionAt(x2, y2);
 		repaint();
 	}
-
-	// Window Listener
 
 	public void windowActivated(WindowEvent e) {
 	}
@@ -276,10 +290,6 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 	}
 
 	public void moveElementAtPx(GraphicElement element, double x, double y) {
-		// The feedback on the node positions is often off since not needed
-		// and generating lots of events. We activate it here since the
-		// movement of the node is decided by the viewer. This is one of the
-		// only moment when the viewer really moves a node.
 		boolean on = graph.feedbackXYZ();
 		graph.feedbackXYZ(true);
 		renderer.moveElementAtPx(element, x, y);
@@ -328,11 +338,19 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 
 		shortcuts = manager;
 	}
+	
 
+	/**
+	 * Return the frame Return the ViewDialog that contains this view (The graphic graph view)
+	 * @return frame. frame with graphic graph view.
+	 */
 	public ViewDialog getFrame() {
 		return frame;
 	}
-
+	
+	/**
+	 * Move Camera To left, is invoked by MouseDraggedEvent
+	 */
 	public void moveToLeft() {
 		if (getCamera() != null) {
 			double delta = 0;
@@ -344,7 +362,9 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			getCamera().setViewCenter(p.x - delta, p.y, 0);
 		}
 	}
-
+	/**
+	 * Move Camera To right, is invoked by MouseDraggedEvent
+	 */
 	public void moveToRight() {
 		if (getCamera() != null) {
 			double delta = 0;
@@ -357,7 +377,9 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			getCamera().setViewCenter(p.x + delta, p.y, 0);
 		}
 	}
-
+	/**
+	 * Move Camera To down, is invoked by MouseDraggedEvent
+	 */
 	public void moveToDown() {
 		if (getCamera() != null) {
 			double delta = 0;
@@ -370,7 +392,9 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			getCamera().setViewCenter(p.x, p.y - delta, 0);
 		}
 	}
-
+	/**
+	 * Move Camera To up, is invoked by MouseDraggedEvent
+	 */
 	public void moveToUp() {
 		if (getCamera() != null) {
 			double delta = 0;
@@ -384,6 +408,10 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 		}
 	}
 
+	/**
+	 * Set main listener for its comunications with main frame. 
+	 * @param main. main!=null and main is instance of AutomataViewer
+	 */
 	public void setMain(AutomataViewer main) {
 		this.main = main;
 		if (mouseClicks != null) {
@@ -394,7 +422,11 @@ public class DefViewPanel extends ViewPanel implements WindowListener, Component
 			((KeyAction) shortcuts).setMain(main);
 		}
 	}
-
+	
+	/**
+	 * Return the graphic graph in this view.
+	 * @return graph. The graphic graph.
+	 */
 	public GraphicGraph getGraphicGraph() {
 		return graph;
 	}

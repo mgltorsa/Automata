@@ -12,17 +12,20 @@ import javax.swing.JDialog;
 @SuppressWarnings("serial")
 public class ViewDialog extends JDialog {
 
-//	private JPanel contentPanel;
+	/**
+	 * A JDialog that must be contains a graphic graph and someview of it.
+	 * @param title
+	 */
 
 	public ViewDialog(String title) { 
-//		contentPanel = new JPanel();
 		setTitle(title);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
-//		contentPanel.setLayout(new FlowLayout());
-//		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 	}
 
+	/**
+	 * Show this dialog on center of the screen, with specific size (width:840,height:640)
+	 */
 	public void showOnCenter() {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		Point center = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();

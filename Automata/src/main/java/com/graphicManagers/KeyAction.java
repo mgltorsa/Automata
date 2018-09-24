@@ -9,20 +9,24 @@ import com.view.AutomataViewer;
 
 public class KeyAction extends DefaultShortcutManager {
 
+	/**
+	 * Main listener for callback main panels.
+	 */
 	protected AutomataViewer main;
 
+	/**
+	 * Key events, if press R the view of Camera will reset.
+	 */
 	public void keyTyped(KeyEvent event) {
 		if (event.getKeyChar() == 'R') {
 			view.getCamera().resetView();
-		} else if (event.getKeyChar() == 'a' || event.getKeyChar() == 'A') {
-			
 		}
-		// else if( event.getKeyChar() == 'B' )
-		// {
-		// view.setModeFPS( ! view.getModeFPS() );
-		// }
 	}
 
+	/**
+	 * For set principal lister or main callback.
+	 * @param main, an AutomataViewer that contains Automaton views
+	 */
 	public void setMain(AutomataViewer main) {
 		this.main = main;
 	}

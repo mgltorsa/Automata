@@ -15,16 +15,34 @@ import manager.AutomataManager;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements ActionListener {
-	public final String LOAD = "Cargar";
+	/**
+	 * A command that indicate save action.
+	 */
 	public final String SAVE = "Guardar";
+	/**
+	 * A command that indicate create states machine action.
+	 */
 	public final String CREATE_SM = "Crear maquina de estados";
+	/**
+	 * A command that indicate create equivalent automaton action.
+	 */
 	public final String CREATE_AT = "Crear automata";
-	public final String ABOUT = "Acerca";
-
+	/**
+	 * The viewer where are the two automata views (view for states machine and equivalent automaton).
+	 */
 	private AutomataViewer viewer;
+	/**
+	 * An automata manager that provides functions to manage the states machine and automaton.
+	 */
 	private AutomataManager automataManager;
+	/**
+	 * An instance of this class (this class use Singleton pattern)
+	 */
 	private static MainView mainView;
 
+	/**
+	 * Main view with the automata viewer.
+	 */
 	private MainView() {
 		setResizable(true);
 		automataManager = new AutomataManager();
@@ -36,13 +54,16 @@ public class MainView extends JFrame implements ActionListener {
 		pack();
 	}
 
+	/**
+	 * Create a menu options for this view.
+	 */
 	private void createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("Archivo");
-		JMenuItem load = new JMenuItem(LOAD);
-		load.setActionCommand(LOAD);
+		JMenuItem load = new JMenuItem("Cargar");
+		load.setActionCommand(PerformerView.LOAD);
 		load.addActionListener(this);
-		JMenuItem save = new JMenuItem(SAVE);
+		JMenuItem save = new JMenuItem("Guardar");
 		save.setActionCommand(SAVE);
 		save.addActionListener(this);
 		file.add(load);
@@ -56,8 +77,8 @@ public class MainView extends JFrame implements ActionListener {
 		autom.addActionListener(this);
 		create.add(statesM);
 		JMenu about = new JMenu("Información");
-		JMenuItem aboutUs = new JMenuItem("Acerca");
-		aboutUs.setActionCommand(ABOUT);
+		JMenuItem aboutUs = new JMenuItem("Acerca del programa");
+		aboutUs.setActionCommand(PerformerView.ABOUT);
 		aboutUs.addActionListener(this);
 		about.add(aboutUs);
 		menuBar.add(file);
@@ -67,10 +88,14 @@ public class MainView extends JFrame implements ActionListener {
 		getContentPane().setLayout(new BorderLayout());
 
 		viewer = new AutomataViewer(this);
-//		viewer.setBounds(0, 0, 574, 458);
 		getContentPane().add(viewer, BorderLayout.CENTER);
 
 	}
+	
+	/**
+	 * Get instance of this class.
+	 * @return mainView, mainView with automata viewer.
+	 */
 
 	public static MainView getInstance() {
 		if (mainView == null) {
@@ -95,9 +120,9 @@ public class MainView extends JFrame implements ActionListener {
 					viewer.clear();
 				}
 			}
-		} else if (e.getActionCommand().equals(ABOUT)) {
-
-		} else if (e.getActionCommand().equals(LOAD)) {
+		} else if (e.getActionCommand().equals(PerformerView.ABOUT)) {
+			PerformerView.getInstance().showAboutPane();
+		} else if (e.getActionCommand().equals(PerformerView.LOAD)) {
 			load();
 		} else if (e.getActionCommand().equals(SAVE)) {
 			save();
@@ -105,12 +130,16 @@ public class MainView extends JFrame implements ActionListener {
 
 	}
 
+	/**
+	 * Load a file and show in automata viewer the correspond states machine view.
+	 */
 	public void load() {
 		String path = PerformerView.getInstance().showLoadDialog();
 		if(path!=null) {
 			try {
 				automataManager.load(path);
 				viewer.loadMachine();
+				PerformerView.getInstance().showCreateMachine();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Error al cargar el archivo", "Fail load", JOptionPane.INFORMATION_MESSAGE);
 				e.printStackTrace();
@@ -118,6 +147,9 @@ public class MainView extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Save the current states machine in a file.
+	 */
 	private void save() {
 		if (automataManager.canSerializeMachine()) {
 			String path = PerformerView.getInstance().showSaveDialog();
@@ -141,6 +173,10 @@ public class MainView extends JFrame implements ActionListener {
 		PerformerView.getInstance().setExtendedState(NORMAL);
 	}
 
+	/**
+	 * Return the current automata manager.
+	 * @return automataManager, manager that provides function to manipulate current autamata.
+	 */
 	public AutomataManager getAutomataManager() {
 		return automataManager;
 	}
